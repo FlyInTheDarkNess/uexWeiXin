@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexWeiXin" version="3.0.13" build = "13">
-        <info>13:增加微信授权登录的五个接口以及相对应的回调方法</info>
+    <plugin uexName="uexWeiXin" version="3.0.14" build = "14">
+        <info>14:废弃微信safeSendReq接口，使用sendReq接口，升级微信WeChatSDK_1.5库</info>
+        <build>13:增加微信授权登录的五个接口以及相对应的回调方法</build>
         <build>12:支持arm64</build>
         <build>11:修改shareLinkContent,shareImageContent,shareTextContent三个接口的回调</build>
         <build>10:增加shareLinkContent,shareImageContent,shareTextContent三个接口</build>
