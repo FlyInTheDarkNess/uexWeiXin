@@ -94,7 +94,7 @@
     request.timeStamp = [_timestamp intValue];
     request.sign = _sign;
     
-    BOOL result = [WXApi safeSendReq:request];
+    BOOL result = [WXApi sendReq:request];
 }
 
 
@@ -178,7 +178,7 @@
     [params setObject:timeStamp forKey:@"timestamp"];
     request.sign = [self getSign:params];
     
-    BOOL result = [WXApi safeSendReq:request];
+    BOOL result = [WXApi sendReq:request];
     NSLog(@"result===%d",result);
 }
 
