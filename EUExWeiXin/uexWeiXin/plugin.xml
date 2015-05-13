@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8" ?>
+<uexplugins>
+    <plugin name="uexWeiXin">
+        <method name="isSupportPay"></method>
+        <method name="gotoPay"></method>
+        <method name="generateAdvanceOrder"></method>
+        <method name="getAccessToken"></method>
+        <method name="getAccessTokenLocal"></method>
+        <method name="registerApp"></method>
+        <method name="isWXAppInstalled"></method>
+        <method name="isWXAppSupportApi"></method>
+        <method name="getWXAppSupportMaxApiVersion"></method>
+        <method name="getApiVersion"></method>
+        <method name="getWXAppInstallUrl"></method>
+        <method name="openWXApp"></method>
+        <method name="sendTextContent"></method>
+        <method name="sendImageContent"></method>
+        <method name="shareLinkContent"></method>
+        <method name="shareImageContent"></method>
+        <method name="shareTextContent"></method>
+        <method name="generatePrepayID"></method>
+        <method name="sendPay"></method>
+        <method name="getWeiXinLoginRefreshAccessToken"></method>
+        <method name="getWeiXinLoginAccessToken"></method>
+        <method name="getWeiXinLoginCheckAccessToken"></method>
+        <method name="getWeiXinLoginUnionID"></method>
+        <method name="weiXinLogin"></method>
+	</plugin>
+</uexplugins>
