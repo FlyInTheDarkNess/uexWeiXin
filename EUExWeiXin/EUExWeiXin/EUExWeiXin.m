@@ -12,6 +12,7 @@
 #import "JSON.h"
 #import <CommonCrypto/CommonDigest.h>
 #import "SBJSON.h"
+#import "ApiXml.h"
 
 
 @implementation EUExWeiXin{
@@ -252,8 +253,119 @@
 }
 
 
+//2015-6-4 by lkl
+#pragma mark - **************3.0.14版本新增 微信支付相关接口 旧接口废弃***************
+
+- (id)getDataFromJson:(NSString *)jsonStr{
+    
+    
+    
+    NSError *error = nil;
+
+    NSData *jsonData= [jsonStr dataUsingEncoding:NSUTF8StringEncoding];
+    
+    id jsonObject = [NSJSONSerialization JSONObjectWithData:jsonData
+                     
+                                                    options:NSJSONReadingMutableContainers
+                     
+                                                      error:&error];
+
+    if (jsonObject != nil && error == nil){
+        return jsonObject;
+    }else{
+        // 解析錯誤
+        return nil;
+    }
+    
+}
+-(void) returnJsonWithName:(NSString *)name Object:(id)obj{
+
+    NSString *result=[obj JSONFragment];
+    NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.%@ != null){uexWeiXin.%@('%@');}",name,name,result];
+    
+
+    [meBrwView stringByEvaluatingJavaScriptFromString:jsonStr];
+}
 
 
+#pragma mark - 生成预支付订单
+
+
+-(void)getPrepayId:(NSMutableArray *)inArgument{
+    if([inArgument count]<1) return;
+    id dataDict=[self getDataFromJson:inArgument[0]];
+    if(![dataDict isKindOfClass:[NSDictionary class]]) return;
+    NSMutableString *sendXML=[NSMutableString string];
+    NSArray *keys = [dataDict allKeys];
+    [sendXML appendString:@"<xml>\n"];
+    for (NSString *categoryId in keys) {
+        [sendXML appendFormat:@"<%@>%@</%@>\n", categoryId, [dataDict objectForKey:categoryId],categoryId];
+    }
+     [sendXML appendFormat:@"</xml>"];
+     NSData *res = [EUExWeiXin httpSend:@"https://api.mch.weixin.qq.com/pay/unifiedorder" method:@"POST" data:sendXML];
+    XMLHelper *xml  = [[XMLHelper alloc] autorelease];
+    
+    //开始解析
+    [xml startParse:res];
+    
+    NSMutableDictionary *resultDict = [xml getDict];
+
+    [self returnJsonWithName:@"cbGetPrepayId" Object:resultDict];
+
+}
+#pragma mark - 发起支付
+-(void)startPay:(NSMutableArray *)inArgument{
+    if([inArgument count]<1) return;
+    id dataDict=[self getDataFromJson:inArgument[0]];
+    if(![dataDict isKindOfClass:[NSDictionary class]]) return;
+    
+    
+    NSMutableString *stamp  = [dataDict objectForKey:@"timestamp"];
+    
+    //调起微信支付
+    PayReq* req             = [[[PayReq alloc] init]autorelease];
+    
+ 
+    req.openID              = [dataDict objectForKey:@"appid"];
+    req.partnerId           = [dataDict objectForKey:@"partnerid"];
+    req.prepayId            = [dataDict objectForKey:@"prepayid"];
+    req.nonceStr            = [dataDict objectForKey:@"noncestr"];
+    req.timeStamp           = stamp.intValue;
+    req.package             = [dataDict objectForKey:@"package"];
+    req.sign                = [dataDict objectForKey:@"sign"];
+
+    
+    [WXApi sendReq:req];
+     
+   
+}
+
+
+
+
+#pragma mark -
+
+
+
+//http 请求
++(NSData *) httpSend:(NSString *)url method:(NSString *)method data:(NSString *)data
+{
+    NSMutableURLRequest *request = [[NSMutableURLRequest alloc] initWithURL:[NSURL URLWithString:url] cachePolicy:NSURLRequestReloadIgnoringLocalCacheData timeoutInterval:5];
+    //设置提交方式
+    [request setHTTPMethod:method];
+    //设置数据类型
+    [request addValue:@"text/xml" forHTTPHeaderField:@"Content-Type"];
+    //设置编码
+    [request setValue:@"UTF-8" forHTTPHeaderField:@"charset"];
+    //如果是POST
+    [request setHTTPBody:[data dataUsingEncoding:NSUTF8StringEncoding]];
+    
+    NSError *error;
+    //将请求的url数据放到NSData对象中
+    NSData *response = [NSURLConnection sendSynchronousRequest:request returningResponse:nil error:&error];
+    return response;
+    //return [[NSString alloc] initWithData:response encoding:NSUTF8StringEncoding];
+}
 
 //*************************************************************
 
@@ -702,21 +814,50 @@
     }
     return imageData;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
 #pragma mark -
 #pragma mark - private
 
+
+
+
 - (void)parseURL:(NSURL *)url application:(UIApplication *)application {
     [WXApi handleOpenURL:url delegate:self];
-}
+} 
+
+
+
 - (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
 {
     return [WXApi handleOpenURL:url delegate:self];
 }
+
+
+
+
+
 -(void)onResp:(BaseResp *)resp {
     WXRespErrCode = resp.errCode;
     
     if ([resp isKindOfClass:[PayResp class]]) {
+        
+        
+        
         PayResp *response = (PayResp *)resp;
+        
+        
         if (response.errStr) {
             self.cbPayStr = [NSString stringWithFormat:@"{\"errCode\":\"%d\",\"errStr\":\"%@\"}",response.errCode, response.errStr];
         }else{
@@ -743,6 +884,7 @@
 -(void)cbPay{
     [self jsSuccessWithName:@"uexWeiXin.cbGotoPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
     [self jsSuccessWithName:@"uexWeiXin.cbSendPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
+    [self jsSuccessWithName:@"uexWeiXin.cbStartPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
 }
 
 -(void)cbWXShare{
@@ -782,4 +924,10 @@
         break;
     }
 }
+
+
+
+
+
+
 @end

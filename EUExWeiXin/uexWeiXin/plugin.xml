@@ -25,5 +25,7 @@
         <method name="getWeiXinLoginCheckAccessToken"></method>
         <method name="getWeiXinLoginUnionID"></method>
         <method name="weiXinLogin"></method>
+        <method name="getPrepayId"></method>
+        <method name="startPay"></method>
 	</plugin>
 </uexplugins>
