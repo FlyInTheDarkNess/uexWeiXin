@@ -884,7 +884,9 @@
 -(void)cbPay{
     [self jsSuccessWithName:@"uexWeiXin.cbGotoPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
     [self jsSuccessWithName:@"uexWeiXin.cbSendPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
-    [self jsSuccessWithName:@"uexWeiXin.cbStartPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbStartPay!=null){uexWeiXin.cbStartPay('%@');}",self.cbPayStr];
+    [meBrwView stringByEvaluatingJavaScriptFromString:cbStr];
+    //[self jsSuccessWithName:@"uexWeiXin.cbStartPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
 }
 
 -(void)cbWXShare{
