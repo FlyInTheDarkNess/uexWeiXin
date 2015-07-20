@@ -789,18 +789,19 @@
         [message setThumbImage:[UIImage imageWithData:thumbImageData]];
         //大图   //大小不能超过10M
         [ext setImageData:imageData];
-       // UIImage* image = [UIImage imageWithData:ext.imageData];
-       // ext.imageData = UIImagePNGRepresentation(image);
-        
-    message.mediaObject  = ext;
-    SendMessageToWXReq *req = [[[SendMessageToWXReq alloc] init]autorelease];
-    req.bText = NO;
-    req.message = message;
-    req.scene = scene;
-    [WXApi sendReq:req];
-    currentSelected = WXPhoto;
+        // UIImage* image = [UIImage imageWithData:ext.imageData];
+        // ext.imageData = UIImagePNGRepresentation(image);
+        message.title = @"微信";
+        message.mediaObject  = ext;
+        SendMessageToWXReq *req = [[[SendMessageToWXReq alloc] init]autorelease];
+        req.bText = NO;
+        req.message = message;
+        req.scene = scene;
+        [WXApi sendReq:req];
+        currentSelected = WXPhoto;
+    }
 }
-}
+
 -(NSData *)getImageDataByPath:(NSString *)imagePath {
     
     NSData *imageData = nil;
@@ -814,6 +815,7 @@
     }
     return imageData;
 }
+
 
 
 
