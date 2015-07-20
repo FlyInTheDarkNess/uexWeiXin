@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexWeiXin" version="3.0.15" build = "15">
-        <info>15:uexWeiXin.cbStartPay 回调结构修正</info>
+    <plugin uexName="uexWeiXin" version="3.0.16" build = "16">
+        <info>16:由微信分享的纯图片统一添加"微信"的标题</info>
+        <build>15:uexWeiXin.cbStartPay 回调结构修正</build>
         <build>14:新增接口getPrepayId和startPay及相应回调，以支持V3 V4支付</build>
         <build>13:增加微信授权登录的五个接口以及相对应的回调方法</build>
         <build>12:支持arm64</build>
