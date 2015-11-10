@@ -485,6 +485,154 @@
         [self jsSuccessWithName:@"uexWeiXin.cbOpenWXApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
     }
 }
+//********************************微信授权登录,11.09后加的*********************
+#pragma mark -- 微信登录授权++++++++
+- (void)login:(NSMutableArray *)inArguments {
+    if([inArguments count]<1){
+        return;
+    }
+    id info = [inArguments[0] JSONValue];
+    if([info isKindOfClass:[NSDictionary class]]){
+        SendAuthReq* req2 =[[SendAuthReq alloc ] init];
+        req2.scope = [info objectForKey:@"scope"];
+        if ([info objectForKey:@"state"]) {
+            req2.state = [info objectForKey:@"state"];
+        }
+        BOOL suc2 = [WXApi sendReq:req2];
+    }
+}
+- (void)cbLogin:data{
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbLogin != null){uexWeiXin.cbLogin('%@');}",data];
+    [EUtility brwView:meBrwView evaluateScript:cbStr];
+}
+
+- (void)getLoginAccessToken:(NSMutableArray *)inArguments {
+    if (inArguments.count<1) {
+        return;
+    }
+    id info = [inArguments[0] JSONValue];
+    if([info isKindOfClass:[NSDictionary class]]){
+        weixinSecret = [info objectForKey:@"secret"];
+        grant_type = [info objectForKey:@"grant_type"];
+        NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=%@",self.appID,weixinSecret,_wxCode,grant_type];
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *zoneUrl = [NSURL URLWithString:url];
+            NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
+            NSData *data = [zoneStr dataUsingEncoding:NSUTF8StringEncoding];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (data) {
+                    self.access_tokenDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    [self performSelector:@selector(cbGetLoginAccessToken) withObject:self afterDelay:0.1];
+                    
+                }
+            });
+        });
+    }
+}
+- (void)cbGetLoginAccessToken {
+    
+    NSString *access_tokenJson =[NSString stringWithFormat:@"%@",[self.access_tokenDict JSONFragment]];
+    // NSLog(@"access_tokenJson------>>%@",access_tokenJson);
+ 
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginAccessToken != null){uexWeiXin.cbGetLoginAccessToken('%@');}",access_tokenJson];
+    [EUtility brwView:meBrwView evaluateScript:cbStr];
+}
+
+- (void)getLoginCheckAccessToken:(NSMutableArray *)inArguments{
+    
+    if (inArguments.count <1) {
+        return;
+    }
+    id info = [inArguments[0] JSONValue];
+    if([info isKindOfClass:[NSDictionary class]]){
+        NSString *access_token = [info objectForKey:@"access_token"];
+        NSString *openid = [info objectForKey:@"openid"];
+        NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/auth?access_token=%@&openid=%@",access_token,openid];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *zoneUrl = [NSURL URLWithString:url];
+            NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
+            NSData *data = [zoneStr dataUsingEncoding:NSUTF8StringEncoding];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (data) {
+                    NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    [self cbGetLoginCheckAccessToken:[dict JSONFragment]];
+                }
+            });
+            
+        });
+    }
+}
+- (void)cbGetLoginCheckAccessToken:cbData {
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginCheckAccessToken != null){uexWeiXin.cbGetLoginCheckAccessToken('%@');}",cbData];
+    [EUtility brwView:meBrwView evaluateScript:cbStr];
+}
+
+- (void)getLoginRefreshAccessToken:(NSMutableArray *)inArguments{
+    
+    if (inArguments.count <1) {
+        return;
+    }
+    id info = [inArguments[0] JSONValue];
+    if([info isKindOfClass:[NSDictionary class]]){
+        NSString *grantType  = [info objectForKey:@"grant_type"];
+        NSString *refresh_token = [info objectForKey:@"refresh_token"];
+        
+        NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%@&grant_type=%@&refresh_token=%@",self.appID,grantType,refresh_token];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *zoneUrl = [NSURL URLWithString:url];
+            NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
+            NSData *data = [zoneStr dataUsingEncoding:NSUTF8StringEncoding];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (data) {
+                    self.refreshAccessTokenDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    //NSLog(@"------>>>>%@", self.refreshAccessTokenDict);
+                    [self performSelector:@selector(cbGetLoginRefreshAccessToken) withObject:self afterDelay:0.1];
+                }
+            });
+            
+        });
+    }
+}
+
+- (void) cbGetLoginRefreshAccessToken {
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginRefreshAccessToken != null){uexWeiXin.cbGetLoginRefreshAccessToken('%@');}",[self.refreshAccessTokenDict JSONFragment]];
+    [EUtility brwView:meBrwView evaluateScript:cbStr];
+}
+
+- (void)getLoginUnionID:(NSMutableArray *)inArguments {
+    
+    if (inArguments.count <1) {
+        return;
+    }
+    id info = [inArguments[0] JSONValue];
+    if([info isKindOfClass:[NSDictionary class]]){
+        NSString *access_token = [info objectForKey:@"access_token"];
+        NSString *openid = [info objectForKey:@"openid"];
+    
+        NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/userinfo?access_token=%@&openid=%@",access_token,openid];
+        
+        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+            NSURL *zoneUrl = [NSURL URLWithString:url];
+            NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
+            NSData *data = [zoneStr dataUsingEncoding:NSUTF8StringEncoding];
+            dispatch_async(dispatch_get_main_queue(), ^{
+                if (data) {
+                    self.userInfoDict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
+                    // NSLog(@"self.userInfoDict------>>>>%@", self.userInfoDict);
+                    [self performSelector:@selector(cbGetLoginUnionID) withObject:self afterDelay:0.1];
+                }
+            });
+            
+        });
+    }
+}
+
+- (void)cbGetLoginUnionID {
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginUnionID != null){uexWeiXin.cbGetLoginUnionID('%@');}",[self.userInfoDict JSONFragment]];
+    [EUtility brwView:meBrwView evaluateScript:cbStr];
+}
 //********************************微信授权登录*********************
 #pragma mark -- 微信登录授权
 - (void)weiXinLogin:(NSMutableArray *)inArguments {
@@ -500,6 +648,7 @@
         return;
     }
 }
+
 
 #pragma mark -- 获取AccessToken
 - (void)getWeiXinLoginAccessToken:(NSMutableArray *)inArguments {
@@ -880,7 +1029,7 @@
         SendAuthResp *authResp  = (SendAuthResp *)resp;
         self.wxCode = authResp.code;
         [self performSelector:@selector(cbWeiXinLogin) withObject:self afterDelay:1.0];
-        
+        [self cbLogin:authResp];
     }
 }
 - (void)cbWeiXinLogin {
