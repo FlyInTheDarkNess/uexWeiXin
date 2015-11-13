@@ -33,5 +33,5 @@
         <method name="getLoginRefreshAccessToken"></method>
         <method name="getLoginCheckAccessToken"></method>
         <method name="getLoginUnionID"></method>
-	</plugin>
+    </plugin>
 </uexplugins>

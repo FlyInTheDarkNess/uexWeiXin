@@ -9,9 +9,9 @@
 /* Begin PBXBuildFile section */
 		034BF50018B2E9BA0074D5B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 034BF4FF18B2E9BA0074D5B7 /* Foundation.framework */; };
 		034BF53218B2EA600074D5B7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 034BF53118B2EA600074D5B7 /* UIKit.framework */; };
+		3CF580451BF570EE00D5F4FE /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CF580441BF570EE00D5F4FE /* libWeChatSDK.a */; settings = {ASSET_TAGS = (); }; };
 		A07D4DF31908B3BD006930BB /* EUExWeiXin.m in Sources */ = {isa = PBXBuildFile; fileRef = A07D4DEE1908B3BD006930BB /* EUExWeiXin.m */; };
 		C64A0AE01B1FEDD3002E3C3D /* ApiXml.mm in Sources */ = {isa = PBXBuildFile; fileRef = C64A0ADF1B1FEDD3002E3C3D /* ApiXml.mm */; };
-		F7FEC91219EB770D00884416 /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F7FEC90F19EB770D00884416 /* libWeChatSDK.a */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -31,6 +31,7 @@
 		034BF4FF18B2E9BA0074D5B7 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		034BF50318B2E9BA0074D5B7 /* EUExWeiXin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EUExWeiXin-Prefix.pch"; sourceTree = "<group>"; };
 		034BF53118B2EA600074D5B7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
+		3CF580441BF570EE00D5F4FE /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		A07D4DE91908B3BD006930BB /* EUExBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExBase.h; sourceTree = "<group>"; };
 		A07D4DEA1908B3BD006930BB /* EUExBaseDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExBaseDefine.h; sourceTree = "<group>"; };
 		A07D4DEB1908B3BD006930BB /* EUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUtility.h; sourceTree = "<group>"; };
@@ -47,7 +48,6 @@
 		F7FEC90C19EB770D00884416 /* SBJsonBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonBase.h; sourceTree = "<group>"; };
 		F7FEC90D19EB770D00884416 /* SBJsonParser.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonParser.h; sourceTree = "<group>"; };
 		F7FEC90E19EB770D00884416 /* SBJsonWriter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = SBJsonWriter.h; sourceTree = "<group>"; };
-		F7FEC90F19EB770D00884416 /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
 		F7FEC91019EB770D00884416 /* WXApi.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApi.h; sourceTree = "<group>"; };
 		F7FEC91119EB770D00884416 /* WXApiObject.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = WXApiObject.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -59,7 +59,7 @@
 			files = (
 				034BF53218B2EA600074D5B7 /* UIKit.framework in Frameworks */,
 				034BF50018B2E9BA0074D5B7 /* Foundation.framework in Frameworks */,
-				F7FEC91219EB770D00884416 /* libWeChatSDK.a in Frameworks */,
+				3CF580451BF570EE00D5F4FE /* libWeChatSDK.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -133,8 +133,8 @@
 		F7FEC90419EB770D00884416 /* sourceCode */ = {
 			isa = PBXGroup;
 			children = (
+				3CF580441BF570EE00D5F4FE /* libWeChatSDK.a */,
 				F7FEC90519EB770D00884416 /* JSON */,
-				F7FEC90F19EB770D00884416 /* libWeChatSDK.a */,
 				F7FEC91019EB770D00884416 /* WXApi.h */,
 				F7FEC91119EB770D00884416 /* WXApiObject.h */,
 				C64A0ADE1B1FEDD3002E3C3D /* ApiXml.h */,
@@ -236,6 +236,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/uexWeiXin";
 				COPY_PHASE_STRIP = NO;
+				ENABLE_BITCODE = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_OPTIMIZATION_LEVEL = 0;
@@ -276,6 +277,7 @@
 				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/uexWeiXin";
 				COPY_PHASE_STRIP = YES;
+				ENABLE_BITCODE = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -297,6 +299,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
 				DSTROOT = /tmp/EUExWeiXin.dst;
+				ENABLE_BITCODE = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EUExWeiXin/EUExWeiXin-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
@@ -312,6 +315,7 @@
 			buildSettings = {
 				CLANG_ENABLE_OBJC_ARC = NO;
 				DSTROOT = /tmp/EUExWeiXin.dst;
+				ENABLE_BITCODE = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EUExWeiXin/EUExWeiXin-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;

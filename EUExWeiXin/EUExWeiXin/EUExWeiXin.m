@@ -486,7 +486,7 @@
     }
 }
 //********************************微信授权登录,11.09后加的*********************
-#pragma mark -- 微信登录授权++++++++
+#pragma mark -- 微信登录授权+++++++++++++++
 - (void)login:(NSMutableArray *)inArguments {
     if([inArguments count]<1){
         return;
@@ -501,8 +501,14 @@
         BOOL suc2 = [WXApi sendReq:req2];
     }
 }
-- (void)cbLogin:data{
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbLogin != null){uexWeiXin.cbLogin('%@');}",data];
+- (void)cbLogin:(id)obj{
+    NSString *result=nil;
+    if([obj isKindOfClass:[NSString class]]){
+        result=(NSString *)obj;
+    }else{
+        result=[obj JSONFragment];
+    }
+    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbLogin != null){uexWeiXin.cbLogin('%@');}",result];
     [EUtility brwView:meBrwView evaluateScript:cbStr];
 }
 
@@ -514,6 +520,9 @@
     if([info isKindOfClass:[NSDictionary class]]){
         weixinSecret = [info objectForKey:@"secret"];
         grant_type = [info objectForKey:@"grant_type"];
+        if(!_wxCode){
+            _wxCode= [info objectForKey:@"code"];
+        }
         NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=%@",self.appID,weixinSecret,_wxCode,grant_type];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSURL *zoneUrl = [NSURL URLWithString:url];
@@ -1029,7 +1038,14 @@
         SendAuthResp *authResp  = (SendAuthResp *)resp;
         self.wxCode = authResp.code;
         [self performSelector:@selector(cbWeiXinLogin) withObject:self afterDelay:1.0];
-        [self cbLogin:authResp];
+        NSMutableDictionary *result=[NSMutableDictionary dictionary];
+        [result setValue:authResp.code forKey:@"code"];
+        [result setValue:authResp.state forKey:@"state"];
+        [result setValue:authResp.country forKey:@"country"];
+        [result setValue:authResp.lang forKey:@"language"];
+        [result setValue:@(authResp.errCode) forKey:@"errCode"];
+        NSLog(@"%@---errCode:%d",result,authResp.errCode);
+        [self cbLogin:result];
     }
 }
 - (void)cbWeiXinLogin {

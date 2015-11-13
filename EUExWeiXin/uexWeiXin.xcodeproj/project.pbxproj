@@ -7,7 +7,6 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		42B9BB571BF49FDF00E744C1 /* ImageIO.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 42B9BB561BF49FDF00E744C1 /* ImageIO.framework */; };
 		5BAEC45A1B21818400D76C80 /* ApiXml.mm in Sources */ = {isa = PBXBuildFile; fileRef = 5BAEC4591B21818400D76C80 /* ApiXml.mm */; };
 		A053A15A18C188FC00839F88 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = A053A15918C188FC00839F88 /* Foundation.framework */; };
 		A053A18F18C18B7600839F88 /* libsqlite3.dylib in Frameworks */ = {isa = PBXBuildFile; fileRef = A053A18E18C18B7600839F88 /* libsqlite3.dylib */; };
@@ -43,7 +42,6 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
-		42B9BB561BF49FDF00E744C1 /* ImageIO.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ImageIO.framework; path = System/Library/Frameworks/ImageIO.framework; sourceTree = SDKROOT; };
 		5BAEC4581B21818400D76C80 /* ApiXml.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ApiXml.h; sourceTree = "<group>"; };
 		5BAEC4591B21818400D76C80 /* ApiXml.mm */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.objcpp; path = ApiXml.mm; sourceTree = "<group>"; };
 		A053A15618C188FC00839F88 /* uexWeiXin.dylib */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.dylib"; includeInIndex = 0; path = uexWeiXin.dylib; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -89,7 +87,6 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				42B9BB571BF49FDF00E744C1 /* ImageIO.framework in Frameworks */,
 				A053A1AF18C1937300839F88 /* MobileCoreServices.framework in Frameworks */,
 				A053A1AD18C1934D00839F88 /* QuartzCore.framework in Frameworks */,
 				A07D4DF91908B4AB006930BB /* libWeChatSDK.a in Frameworks */,
@@ -134,7 +131,6 @@
 		A053A15818C188FC00839F88 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				42B9BB561BF49FDF00E744C1 /* ImageIO.framework */,
 				A053A1AE18C1937300839F88 /* MobileCoreServices.framework */,
 				A053A1AC18C1934D00839F88 /* QuartzCore.framework */,
 				A053A1AA18C1933B00839F88 /* CoreGraphics.framework */,
@@ -352,7 +348,6 @@
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/uexWeiXin/";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DSTROOT = /tmp/uexWeiXin.dst;
-				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EUExWeiXin/EUExWeiXin-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
@@ -377,7 +372,6 @@
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/uexWeiXin/";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DSTROOT = /tmp/uexWeiXin.dst;
-				ENABLE_BITCODE = NO;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "EUExWeiXin/EUExWeiXin-Prefix.pch";
 				IPHONEOS_DEPLOYMENT_TARGET = 6.1;
