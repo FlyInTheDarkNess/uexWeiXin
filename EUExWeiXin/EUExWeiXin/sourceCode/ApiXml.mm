@@ -47,8 +47,7 @@
 //解析文档结束
 - (void)parserDidEndDocument:(NSXMLParser *)parser{
     //NSLog(@"文档解析结束");
-    [xmlElements release];
-    [xmlParser release];
+
 }
 
 @end

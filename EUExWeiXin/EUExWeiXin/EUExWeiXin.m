@@ -13,6 +13,9 @@
 #import <CommonCrypto/CommonDigest.h>
 #import "SBJSON.h"
 #import "ApiXml.h"
+#import "uexWeiXinResponder.h"
+#import "EBrowserWindow.h"
+#import "EBrowserWindowContainer.h"
 
 
 @implementation EUExWeiXin{
@@ -34,8 +37,12 @@
 }
 
 -(void)dealloc{
-    [super dealloc];
+
 }
+
+
+
+
 
 #pragma mark -
 #pragma mark - 微信支付
@@ -77,7 +84,8 @@
     [requests setHTTPBody:data];
     [requests setTimeoutInterval:60000];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:requests delegate:self];
-    [requests release];
+    [connection start];
+    
 }
 
 -(void)gotoPay:(NSMutableArray *)inArguments {
@@ -87,7 +95,7 @@
     NSString * _noncestr = [inArguments objectAtIndex:3];
     NSString * _timestamp = [inArguments objectAtIndex:4];
     NSString * _sign = [inArguments objectAtIndex:5];
-    PayReq *request = [[[PayReq alloc] init] autorelease];
+    PayReq *request = [[PayReq alloc] init];
     request.partnerId = _pactnerid;
     request.prepayId = _prapayid;
     request.package = _package;
@@ -95,7 +103,7 @@
     request.timeStamp = [_timestamp intValue];
     request.sign = _sign;
     
-    BOOL result = [WXApi safeSendReq:request];
+    [self startWXRequest:request];
 }
 
 
@@ -146,7 +154,7 @@
     [requests setHTTPBody:data];
     [requests setTimeoutInterval:60000];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:requests delegate:self];
-    [requests release];
+    [connection start];
 }
 
 //代替gotoPay
@@ -154,14 +162,14 @@
     NSString * partnerId = [inArguments objectAtIndex:0];
     NSString * prepayid = [inArguments objectAtIndex:1];
     NSString * app_key = [inArguments objectAtIndex:2];
-    NSString * packageValue = [inArguments objectAtIndex:3];
+    //NSString * packageValue = [inArguments objectAtIndex:3];
     
     NSString * nonceStr = [self getNonceStr];
     NSString * timeStamp = [self getTimeStamp];
     
     
     
-    PayReq *request = [[[PayReq alloc] init] autorelease];
+    PayReq *request = [[PayReq alloc] init];
     request.partnerId = partnerId;
     request.prepayId = prepayid;
     request.package = @"Sign=WXPay";
@@ -178,9 +186,9 @@
     [params setObject:prepayid forKey:@"prepayid"];
     [params setObject:timeStamp forKey:@"timestamp"];
     request.sign = [self getSign:params];
-    
-    BOOL result = [WXApi safeSendReq:request];
-    NSLog(@"result===%d",result);
+
+    [self startWXRequest:request];
+
 }
 
 - (NSString *)getTraceId
@@ -278,14 +286,7 @@
     }
     
 }
--(void) returnJsonWithName:(NSString *)name Object:(id)obj{
 
-    NSString *result=[obj JSONFragment];
-    NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.%@ != null){uexWeiXin.%@('%@');}",name,name,result];
-    
-
-    [meBrwView stringByEvaluatingJavaScriptFromString:jsonStr];
-}
 
 
 #pragma mark - 生成预支付订单
@@ -303,14 +304,15 @@
     }
      [sendXML appendFormat:@"</xml>"];
      NSData *res = [EUExWeiXin httpSend:@"https://api.mch.weixin.qq.com/pay/unifiedorder" method:@"POST" data:sendXML];
-    XMLHelper *xml  = [[XMLHelper alloc] autorelease];
+    XMLHelper *xml  = [[XMLHelper alloc] init];
     
     //开始解析
     [xml startParse:res];
     
     NSMutableDictionary *resultDict = [xml getDict];
-
-    [self returnJsonWithName:@"cbGetPrepayId" Object:resultDict];
+    NSString *result=[resultDict JSONFragment];
+    NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
+    [EUtility brwView:self.meBrwView evaluateScript:jsonStr];
 
 }
 #pragma mark - 发起支付
@@ -323,7 +325,7 @@
     NSMutableString *stamp  = [dataDict objectForKey:@"timestamp"];
     
     //调起微信支付
-    PayReq* req             = [[[PayReq alloc] init]autorelease];
+    PayReq* req             = [[PayReq alloc] init];
     
  
     req.openID              = [dataDict objectForKey:@"appid"];
@@ -335,7 +337,7 @@
     req.sign                = [dataDict objectForKey:@"sign"];
 
     
-    [WXApi sendReq:req];
+    [self startWXRequest:req];
      
    
 }
@@ -380,6 +382,7 @@
     [requests setHTTPMethod:@"GET"];
     [requests setTimeoutInterval:60000];
     NSURLConnection *connection = [[NSURLConnection alloc] initWithRequest:requests delegate:self];
+    [connection start];
     //    [requests release];
 }
 #pragma mark -
@@ -416,11 +419,11 @@
             [self jsSuccessWithName:@"uexWeiXin.cbGeneratePrepayID" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
         }
     }
-    [connection release];
+
     if (recivedData) {
         recivedData = nil;
     }
-    [reciveStr release];
+
 }
 //网络请求过程中，出现任何错误（断网，连接超时等）会进入此方法
 -(void)connection:(NSURLConnection *)connection didFailWithError:(NSError *)error {
@@ -438,7 +441,7 @@
             [self jsSuccessWithName:@"uexWeiXin.cbGeneratePrepayID" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
         }
     }
-    [connection release];
+
 }
 #pragma mark -
 #pragma mark - 微信分享
@@ -493,23 +496,13 @@
     }
     id info = [inArguments[0] JSONValue];
     if([info isKindOfClass:[NSDictionary class]]){
-        SendAuthReq* req2 =[[SendAuthReq alloc ] init];
-        req2.scope = [info objectForKey:@"scope"];
+        SendAuthReq* req =[[SendAuthReq alloc ] init];
+        req.scope = [info objectForKey:@"scope"];
         if ([info objectForKey:@"state"]) {
-            req2.state = [info objectForKey:@"state"];
+            req.state = [info objectForKey:@"state"];
         }
-        BOOL suc2 = [WXApi sendReq:req2];
+        [self startWXRequest:req];
     }
-}
-- (void)cbLogin:(id)obj{
-    NSString *result=nil;
-    if([obj isKindOfClass:[NSString class]]){
-        result=(NSString *)obj;
-    }else{
-        result=[obj JSONFragment];
-    }
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbLogin != null){uexWeiXin.cbLogin('%@');}",result];
-    [EUtility brwView:meBrwView evaluateScript:cbStr];
 }
 
 - (void)getLoginAccessToken:(NSMutableArray *)inArguments {
@@ -652,7 +645,7 @@
         if (inArguments.count >1) {
             req.state = [inArguments objectAtIndex:1];
         }
-        BOOL suc =  [WXApi sendReq:req];
+        [self startWXRequest:req];
     }else {
         return;
     }
@@ -791,12 +784,12 @@
 -(void)sendTextContent:(NSMutableArray *)inArguments{
     // 0 会话
     // 1 场景
-    SendMessageToWXReq* req = [[[SendMessageToWXReq alloc] init]autorelease];
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
     req.bText = YES;
     req.text = [inArguments objectAtIndex:1];
     req.scene = [[inArguments objectAtIndex:0] intValue];
-    currentSelected = WXTextContent;
-    [WXApi sendReq:req];
+    [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeTextContent;
+    [self startWXRequest:req];
 }
 
 - (void) sendImageContent:(NSMutableArray *)inArguments{
@@ -842,12 +835,13 @@
         NSString * descrip =  [inArguments objectAtIndex:5];
         [message setDescription:descrip];
     }
-    SendMessageToWXReq *req = [[[SendMessageToWXReq alloc] init]autorelease];
+    SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
     req.bText = NO;
     req.message = message;
     req.scene = scene;
-   [WXApi sendReq:req];
-    currentSelected = WXPic;
+    [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypePicture;
+   [self startWXRequest:req];
+
 }
 /////////////////新增接口//////////////////////////////
 -(void)shareTextContent:(NSMutableArray *)inArguments{
@@ -864,12 +858,12 @@
     scene = [[jsonDataDict objectForKey:@"scene"] intValue];
     text = [jsonDataDict objectForKey:@"text"];
 
-    SendMessageToWXReq* req = [[[SendMessageToWXReq alloc] init]autorelease];
+    SendMessageToWXReq* req = [[SendMessageToWXReq alloc] init];
     req.bText = YES;
     req.text = text;
     req.scene = scene;
-    currentSelected = WXText;
-    [WXApi sendReq:req];
+    [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeText;
+    [self startWXRequest:req];
 }
 
 - (void)shareLinkContent:(NSMutableArray *)inArguments{
@@ -913,12 +907,13 @@
         [ext setWebpageUrl:wedpageUrl];
         message.mediaObject = ext;
     
-    SendMessageToWXReq *req = [[[SendMessageToWXReq alloc] init]autorelease];
+    SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
     req.bText = NO;
     req.message = message;
     req.scene = scene;
-    [WXApi sendReq:req];
-    currentSelected = WXLink;
+    [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeLink;
+    [self startWXRequest:req];
+
 }
 
 - (void)shareImageContent:(NSMutableArray *)inArguments {
@@ -956,12 +951,13 @@
         
         message.title =(title)?title:@"微信";
         message.mediaObject  = ext;
-        SendMessageToWXReq *req = [[[SendMessageToWXReq alloc] init]autorelease];
+        SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
         req.bText = NO;
         req.message = message;
         req.scene = scene;
-        [WXApi sendReq:req];
-        currentSelected = WXPhoto;
+        [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypePhoto;
+        [self startWXRequest:req];
+
     }
 }
 
@@ -987,7 +983,26 @@
 
 
 
+- (void)setCallbackWindowName:(NSMutableArray *)inArguments{
+    if([inArguments count] < 1){
+        return;
+    }
+    id info = [inArguments[0] JSONValue];
+    if(!info || ![info isKindOfClass:[NSDictionary class]]){
+        return;
+    }
+    NSString *winName = info[@"windowName"];
+    if(!winName){
+        return;
+    }
+    EBrowserWindowContainer *eBrwWndContainer = [EBrowserWindowContainer getBrowserWindowContaier:self.meBrwView];
+    
 
+    EBrowserWindow *window=[eBrwWndContainer.mBrwWndDict objectForKey:winName];
+    if (window && window.meBrwView) {
+        [uexWeiXinResponder sharedResponder].specifiedReceiver=window.meBrwView;
+    }
+}
 
 
 
@@ -995,113 +1010,33 @@
 #pragma mark -
 #pragma mark - private
 
+- (void)startWXRequest:(BaseReq *)req{
+    [uexWeiXinResponder sharedResponder].receiver=self.meBrwView;
+    [WXApi sendReq:req];
+}
 
 
 
+
++ (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
+{
+    return [WXApi handleOpenURL:url delegate:[uexWeiXinResponder sharedResponder]];
+}
+
++ (BOOL)application:(UIApplication *)application handleOpenURL:(NSURL *)url{
+    return [WXApi handleOpenURL:url delegate:[uexWeiXinResponder sharedResponder]];
+}
+
+
+
+
+
+#pragma mark - Deprecated
+/*
 - (void)parseURL:(NSURL *)url application:(UIApplication *)application {
     [WXApi handleOpenURL:url delegate:self];
-} 
-
-
-
-- (BOOL) application:(UIApplication *)application openURL:(NSURL *)url sourceApplication:(NSString *)sourceApplication annotation:(id)annotation
-{
-    return [WXApi handleOpenURL:url delegate:self];
 }
 
-
-
-
-
--(void)onResp:(BaseResp *)resp {
-    WXRespErrCode = resp.errCode;
-    
-    if ([resp isKindOfClass:[PayResp class]]) {
-        
-        
-        
-        PayResp *response = (PayResp *)resp;
-        
-        
-        if (response.errStr) {
-            self.cbPayStr = [NSString stringWithFormat:@"{\"errCode\":\"%d\",\"errStr\":\"%@\"}",response.errCode, response.errStr];
-        }else{
-            self.cbPayStr = [NSString stringWithFormat:@"{\"errCode\":\"%d\",\"errStr\":\"\"}",response.errCode];
-        }
-        [self performSelector:@selector(cbPay) withObject:self afterDelay:1.0];
-        
-    } else if ([resp isKindOfClass:[SendMessageToWXResp class]]) {
-          //延迟回调
-        [self performSelector:@selector(cbWXShare) withObject:self afterDelay:1.0];
-    }
-    else if([resp isKindOfClass:[SendAuthResp class]]) {
-        SendAuthResp *authResp  = (SendAuthResp *)resp;
-        self.wxCode = authResp.code;
-        [self performSelector:@selector(cbWeiXinLogin) withObject:self afterDelay:1.0];
-        NSMutableDictionary *result=[NSMutableDictionary dictionary];
-        [result setValue:authResp.code forKey:@"code"];
-        [result setValue:authResp.state forKey:@"state"];
-        [result setValue:authResp.country forKey:@"country"];
-        [result setValue:authResp.lang forKey:@"language"];
-        [result setValue:@(authResp.errCode) forKey:@"errCode"];
-        NSLog(@"%@---errCode:%d",result,authResp.errCode);
-        [self cbLogin:result];
-    }
-}
-- (void)cbWeiXinLogin {
-    
-    [self jsSuccessWithName:@"uexWeiXin.cbWeiXinLogin" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:WXRespErrCode];
-}
-
--(void)cbPay{
-    [self jsSuccessWithName:@"uexWeiXin.cbGotoPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
-    [self jsSuccessWithName:@"uexWeiXin.cbSendPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbStartPay!=null){uexWeiXin.cbStartPay('%@');}",self.cbPayStr];
-    [meBrwView stringByEvaluatingJavaScriptFromString:cbStr];
-    //[self jsSuccessWithName:@"uexWeiXin.cbStartPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:self.cbPayStr];
-}
-
--(void)cbWXShare{
-     switch (currentSelected) {
-        case WXTextContent:
-          [self jsSuccessWithName:@"uexWeiXin.cbSendTextContent" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:WXRespErrCode];
-        break;
-        case WXPic:
-          [self jsSuccessWithName:@"uexWeiXin.cbSendImageContent" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:WXRespErrCode];
-        break;
-         ////新增/////
-        case WXPhoto:
-          //[self jsSuccessWithName:@"uexWeiXin.cbShareImageContent" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:WXRespErrCode];
-         {
-             NSString *jsString = [NSString stringWithFormat:@"uexWeiXin.cbShareImageContent(\"%d\");",WXRespErrCode];
-             [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
-         }
-
-         break;
-         case WXLink:
-          // [self jsSuccessWithName:@"uexWeiXin.cbShareLinkContent" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:WXRespErrCode];
-         {
-             NSString *jsString = [NSString stringWithFormat:@"uexWeiXin.cbShareLinkContent(\"%d\");",WXRespErrCode];
-             [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
-         }
-
-         break;
-         case WXText:
-          //[self jsSuccessWithName:@"uexWeiXin.cbShareTextContent" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:WXRespErrCode];
-         {
-             NSString *jsString = [NSString stringWithFormat:@"uexWeiXin.cbShareTextContent(\"%d\");",WXRespErrCode];
-             [self.meBrwView stringByEvaluatingJavaScriptFromString:jsString];
-         }
-         break;
-             
-        default:
-        break;
-    }
-}
-
-
-
-
-
+*/
 
 @end

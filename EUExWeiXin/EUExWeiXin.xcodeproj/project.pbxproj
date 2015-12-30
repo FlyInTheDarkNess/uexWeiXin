@@ -9,7 +9,8 @@
 /* Begin PBXBuildFile section */
 		034BF50018B2E9BA0074D5B7 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 034BF4FF18B2E9BA0074D5B7 /* Foundation.framework */; };
 		034BF53218B2EA600074D5B7 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 034BF53118B2EA600074D5B7 /* UIKit.framework */; };
-		3CF580451BF570EE00D5F4FE /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CF580441BF570EE00D5F4FE /* libWeChatSDK.a */; settings = {ASSET_TAGS = (); }; };
+		3CF580451BF570EE00D5F4FE /* libWeChatSDK.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 3CF580441BF570EE00D5F4FE /* libWeChatSDK.a */; };
+		42D1D4741C33C7AF0013F8FE /* uexWeiXinResponder.m in Sources */ = {isa = PBXBuildFile; fileRef = 42D1D4731C33C7AF0013F8FE /* uexWeiXinResponder.m */; };
 		A07D4DF31908B3BD006930BB /* EUExWeiXin.m in Sources */ = {isa = PBXBuildFile; fileRef = A07D4DEE1908B3BD006930BB /* EUExWeiXin.m */; };
 		C64A0AE01B1FEDD3002E3C3D /* ApiXml.mm in Sources */ = {isa = PBXBuildFile; fileRef = C64A0ADF1B1FEDD3002E3C3D /* ApiXml.mm */; };
 /* End PBXBuildFile section */
@@ -32,6 +33,11 @@
 		034BF50318B2E9BA0074D5B7 /* EUExWeiXin-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "EUExWeiXin-Prefix.pch"; sourceTree = "<group>"; };
 		034BF53118B2EA600074D5B7 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		3CF580441BF570EE00D5F4FE /* libWeChatSDK.a */ = {isa = PBXFileReference; lastKnownFileType = archive.ar; path = libWeChatSDK.a; sourceTree = "<group>"; };
+		42D1D4721C33C7AF0013F8FE /* uexWeiXinResponder.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = uexWeiXinResponder.h; sourceTree = "<group>"; };
+		42D1D4731C33C7AF0013F8FE /* uexWeiXinResponder.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = uexWeiXinResponder.m; sourceTree = "<group>"; };
+		42D1D4771C33E3590013F8FE /* EBrowserWindowContainer.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EBrowserWindowContainer.h; sourceTree = "<group>"; };
+		42D1D4781C33E37B0013F8FE /* EBrowserWindow.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EBrowserWindow.h; sourceTree = "<group>"; };
+		42D1D47A1C33E4DA0013F8FE /* ACEUtils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACEUtils.h; sourceTree = "<group>"; };
 		A07D4DE91908B3BD006930BB /* EUExBase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExBase.h; sourceTree = "<group>"; };
 		A07D4DEA1908B3BD006930BB /* EUExBaseDefine.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUExBaseDefine.h; sourceTree = "<group>"; };
 		A07D4DEB1908B3BD006930BB /* EUtility.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = EUtility.h; sourceTree = "<group>"; };
@@ -116,6 +122,8 @@
 				A07D4DE81908B3BD006930BB /* engineHeader */,
 				A07D4DED1908B3BD006930BB /* EUExWeiXin.h */,
 				A07D4DEE1908B3BD006930BB /* EUExWeiXin.m */,
+				42D1D4721C33C7AF0013F8FE /* uexWeiXinResponder.h */,
+				42D1D4731C33C7AF0013F8FE /* uexWeiXinResponder.m */,
 			);
 			name = EUExWeiXin;
 			sourceTree = "<group>";
@@ -123,6 +131,9 @@
 		A07D4DE81908B3BD006930BB /* engineHeader */ = {
 			isa = PBXGroup;
 			children = (
+				42D1D47A1C33E4DA0013F8FE /* ACEUtils.h */,
+				42D1D4781C33E37B0013F8FE /* EBrowserWindow.h */,
+				42D1D4771C33E3590013F8FE /* EBrowserWindowContainer.h */,
 				A07D4DE91908B3BD006930BB /* EUExBase.h */,
 				A07D4DEA1908B3BD006930BB /* EUExBaseDefine.h */,
 				A07D4DEB1908B3BD006930BB /* EUtility.h */,
@@ -210,6 +221,7 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				42D1D4741C33C7AF0013F8FE /* uexWeiXinResponder.m in Sources */,
 				C64A0AE01B1FEDD3002E3C3D /* ApiXml.mm in Sources */,
 				A07D4DF31908B3BD006930BB /* EUExWeiXin.m in Sources */,
 			);
@@ -297,7 +309,7 @@
 		034BF52018B2E9BA0074D5B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/EUExWeiXin.dst;
 				ENABLE_BITCODE = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
@@ -313,7 +325,7 @@
 		034BF52118B2E9BA0074D5B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				CLANG_ENABLE_OBJC_ARC = NO;
+				CLANG_ENABLE_OBJC_ARC = YES;
 				DSTROOT = /tmp/EUExWeiXin.dst;
 				ENABLE_BITCODE = YES;
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;

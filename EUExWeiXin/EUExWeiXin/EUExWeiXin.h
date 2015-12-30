@@ -9,16 +9,9 @@
 #import "EUExBase.h"
 #import "WXApi.h"
 
-typedef enum{
-    WXTextContent = 0,
-    WXPic,
-    WXPhoto,
-    WXLink,
-    WXText
-}WXSendType;
 
-@interface EUExWeiXin : EUExBase<WXApiDelegate>{
-    WXSendType currentSelected;
+
+@interface EUExWeiXin : EUExBase{
     NSMutableData * recivedData;
 }
 
