@@ -1032,11 +1032,12 @@
 
 
 #pragma mark - Deprecated
-/*
+
 - (void)parseURL:(NSURL *)url application:(UIApplication *)application {
-    [WXApi handleOpenURL:url delegate:self];
+    
+    //[WXApi handleOpenURL:url delegate:self];
 }
 
-*/
+
 
 @end
