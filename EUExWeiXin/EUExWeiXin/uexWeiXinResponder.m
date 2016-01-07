@@ -77,6 +77,7 @@
     }
     else if([resp isKindOfClass:[SendAuthResp class]]) {
         SendAuthResp *authResp  = (SendAuthResp *)resp;
+        self.loginCode=authResp.code;
         NSMutableDictionary *result=[NSMutableDictionary dictionary];
         [result setValue:authResp.code forKey:@"code"];
         [result setValue:authResp.state forKey:@"state"];

@@ -513,10 +513,10 @@
     if([info isKindOfClass:[NSDictionary class]]){
         weixinSecret = [info objectForKey:@"secret"];
         grant_type = [info objectForKey:@"grant_type"];
-        if(!_wxCode){
-            _wxCode= [info objectForKey:@"code"];
-        }
-        NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=%@",self.appID,weixinSecret,_wxCode,grant_type];
+
+        NSString *wxCode=[info objectForKey:@"code"]?:@"";
+
+        NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=%@",self.appID,weixinSecret,wxCode,grant_type];
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSURL *zoneUrl = [NSURL URLWithString:url];
             NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
@@ -662,8 +662,8 @@
     [self getAccess_token];
 }
 - (void)getAccess_token {
-    
-    NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=%@",self.appID,weixinSecret,_wxCode,grant_type];
+    NSString *wxCode= [uexWeiXinResponder sharedResponder].loginCode;
+    NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/access_token?appid=%@&secret=%@&code=%@&grant_type=%@",self.appID,weixinSecret,wxCode,grant_type];
     dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         NSURL *zoneUrl = [NSURL URLWithString:url];
         NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];

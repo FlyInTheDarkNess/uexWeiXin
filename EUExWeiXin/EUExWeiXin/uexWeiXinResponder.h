@@ -42,6 +42,7 @@ typedef NS_ENUM(NSInteger,uexWeiXinShareType) {
 @property (nonatomic,weak)EBrowserView *specifiedReceiver;
 @property (nonatomic,assign)uexWeiXinShareType currentShareType;
 
+@property (nonatomic,strong)NSString *loginCode;
 
 
 + (instancetype)sharedResponder;

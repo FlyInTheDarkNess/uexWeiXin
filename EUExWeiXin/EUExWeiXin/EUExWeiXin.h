@@ -15,11 +15,10 @@
     NSMutableData * recivedData;
 }
 
-@property (nonatomic,copy) NSString * appID;
-@property (nonatomic,copy) NSString * cbPayStr;
-@property (nonatomic,copy) NSString *wxCode;
-@property (nonatomic,copy) NSString *WXCheckAccessTokenErrcode;
-@property (nonatomic,retain) NSMutableDictionary *access_tokenDict;
-@property (nonatomic,retain) NSMutableDictionary *refreshAccessTokenDict;
-@property (nonatomic,retain) NSMutableDictionary *userInfoDict;
+@property (nonatomic,strong) NSString * appID;
+@property (nonatomic,strong) NSString * cbPayStr;
+@property (nonatomic,strong) NSString *WXCheckAccessTokenErrcode;
+@property (nonatomic,strong) NSMutableDictionary *access_tokenDict;
+@property (nonatomic,strong) NSMutableDictionary *refreshAccessTokenDict;
+@property (nonatomic,strong) NSMutableDictionary *userInfoDict;
 @end

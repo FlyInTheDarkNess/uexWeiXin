@@ -196,7 +196,7 @@
 		034BF4F418B2E9BA0074D5B7 /* Project object */ = {
 			isa = PBXProject;
 			attributes = {
-				LastUpgradeCheck = 0630;
+				LastUpgradeCheck = 0720;
 				ORGANIZATIONNAME = zhengcuan;
 			};
 			buildConfigurationList = 034BF4F718B2E9BA0074D5B7 /* Build configuration list for PBXProject "EUExWeiXin" */;
