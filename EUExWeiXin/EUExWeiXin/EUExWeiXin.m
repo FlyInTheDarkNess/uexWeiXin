@@ -16,20 +16,15 @@
 #import "uexWeiXinResponder.h"
 #import "EBrowserWindow.h"
 #import "EBrowserWindowContainer.h"
-
-
+@interface EUExWeiXin()
+@property(nonatomic,strong)ACJSFunctionRef*func;
+@property(nonatomic,strong)ACJSFunctionRef*funcGeneratePrepayID;
+@end
 @implementation EUExWeiXin{
     int  WXRespErrCode;
     NSString *weixinSecret;
     NSString *grant_type;
     
-}
-
--(id)initWithBrwView:(EBrowserView *)eInBrwView{
-    if (self=[super initWithBrwView:eInBrwView]) {
-        
-    }
-    return self;
 }
 
 -(void)clean{
@@ -48,31 +43,43 @@
 #pragma mark - 微信支付
 
 -(void)isSupportPay:(NSMutableArray *)inArguments {
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     BOOL isSupportApi = [WXApi isWXAppSupportApi];
     if (isSupportApi) {
-        [self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:0];
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:0];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@0)];
+        [func executeWithArguments:ACArgsPack(@0,@2,@0)];
     }else {
-        [self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:1];
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:1];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@1)];
+        [func executeWithArguments:ACArgsPack(@0,@2,@1)];
     }
 }
 
 -(void)getAccessToken:(NSMutableArray *)inArguments {
     NSString *appid = [inArguments objectAtIndex:0];
     NSString *secret = [inArguments objectAtIndex:1];
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.func = func;
     [self getDataAsynchronous:appid andSecret:secret];
 }
 
 -(void)getAccessTokenLocal:(NSMutableArray *)inArguments {
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     NSString *uexWeiXin_access_token = nil;
     if ([[NSUserDefaults standardUserDefaults]  objectForKey:@"uexWeiXin_access_token"]) {
         uexWeiXin_access_token = [[NSUserDefaults standardUserDefaults]  objectForKey:@"uexWeiXin_access_token"];
     }
-    [self jsSuccessWithName:@"uexWeiXin.cbGetAccessTokenLocal" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:uexWeiXin_access_token];
+    //[self jsSuccessWithName:@"uexWeiXin.cbGetAccessTokenLocal" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:uexWeiXin_access_token];
+     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetAccessTokenLocal" arguments:ACArgsPack(@0,@0,uexWeiXin_access_token)];
+    [func executeWithArguments:ACArgsPack(@0,@0,uexWeiXin_access_token)];
 }
 
 -(void)generateAdvanceOrder:(NSMutableArray *)inArguments {
     NSString *accessTocken = [inArguments objectAtIndex:0];
     NSString *varStr = [inArguments objectAtIndex:1];
+     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.func = func;
     //第一步，创建url
     NSString *urlStr = [NSString stringWithFormat:@"https://api.weixin.qq.com/pay/genprepay?access_token=%@",accessTocken];
     NSURL *url = [NSURL URLWithString:urlStr];
@@ -95,6 +102,7 @@
     NSString * _noncestr = [inArguments objectAtIndex:3];
     NSString * _timestamp = [inArguments objectAtIndex:4];
     NSString * _sign = [inArguments objectAtIndex:5];
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     PayReq *request = [[PayReq alloc] init];
     request.partnerId = _pactnerid;
     request.prepayId = _prapayid;
@@ -103,7 +111,7 @@
     request.timeStamp = [_timestamp intValue];
     request.sign = _sign;
     
-    [self startWXRequest:request];
+    [self startWXRequest:request FunctionRef:func];
 }
 
 
@@ -115,6 +123,8 @@
     NSString * accessTocken = [inArguments objectAtIndex:0];
     NSString * app_key = [inArguments objectAtIndex:1];
     NSString * packageValue = [inArguments objectAtIndex:2];
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.funcGeneratePrepayID = func;
     NSString * traceId = @"crestxu";
     if ([inArguments isKindOfClass:[NSMutableArray class]] && [inArguments count] == 4) {
         traceId = [inArguments objectAtIndex:3];
@@ -162,6 +172,7 @@
     NSString * partnerId = [inArguments objectAtIndex:0];
     NSString * prepayid = [inArguments objectAtIndex:1];
     NSString * app_key = [inArguments objectAtIndex:2];
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     //NSString * packageValue = [inArguments objectAtIndex:3];
     
     NSString * nonceStr = [self getNonceStr];
@@ -187,7 +198,7 @@
     [params setObject:timeStamp forKey:@"timestamp"];
     request.sign = [self getSign:params];
 
-    [self startWXRequest:request];
+    [self startWXRequest:request FunctionRef:func];
 
 }
 
@@ -293,7 +304,9 @@
 
 
 -(void)getPrepayId:(NSMutableArray *)inArgument{
+    
     if([inArgument count]<1) return;
+    ACJSFunctionRef *func = JSFunctionArg(inArgument.lastObject);
     id dataDict=[self getDataFromJson:inArgument[0]];
     if(![dataDict isKindOfClass:[NSDictionary class]]) return;
     NSMutableString *sendXML=[NSMutableString string];
@@ -311,13 +324,16 @@
     
     NSMutableDictionary *resultDict = [xml getDict];
     NSString *result=[resultDict JSONFragment];
-    NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
-    [EUtility brwView:self.meBrwView evaluateScript:jsonStr];
-
+    //NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
+    //[EUtility brwView:self.meBrwView evaluateScript:jsonStr];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetPrepayId" arguments:ACArgsPack(result)];
+    [func executeWithArguments:ACArgsPack(result)];
 }
 #pragma mark - 发起支付
 -(void)startPay:(NSMutableArray *)inArgument{
+    
     if([inArgument count]<1) return;
+    ACJSFunctionRef *func = JSFunctionArg(inArgument.lastObject);
     id dataDict=[self getDataFromJson:inArgument[0]];
     if(![dataDict isKindOfClass:[NSDictionary class]]) return;
     
@@ -337,7 +353,7 @@
     req.sign                = [dataDict objectForKey:@"sign"];
 
     
-    [self startWXRequest:req];
+    [self startWXRequest:req FunctionRef:func];
      
    
 }
@@ -410,13 +426,23 @@
             NSString *access_token = [dict objectForKey:@"access_token"];
             [[NSUserDefaults standardUserDefaults] setObject:access_token forKey:@"uexWeiXin_access_token"];
         }
-        [self jsSuccessWithName:@"uexWeiXin.cbGetAccessToken" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
+       // [self jsSuccessWithName:@"uexWeiXin.cbGetAccessToken" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetAccessToken" arguments:ACArgsPack(@0,@1,reciveStr)];
+        [self.func executeWithArguments:ACArgsPack(@0,@1,reciveStr)];
+         self.func = nil;
     }else {
         range = [strUrl rangeOfString:@"?access_token="];
         if (14 == range.length) {
             //生产预支付订单的请求
-            [self jsSuccessWithName:@"uexWeiXin.cbGenerateAdvanceOrder" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
-            [self jsSuccessWithName:@"uexWeiXin.cbGeneratePrepayID" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
+            //[self jsSuccessWithName:@"uexWeiXin.cbGenerateAdvanceOrder" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
+            [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGenerateAdvanceOrder" arguments:ACArgsPack(@0,@1,reciveStr)];
+            [self.func executeWithArguments:ACArgsPack(@0,@1,reciveStr)];
+            //[self jsSuccessWithName:@"uexWeiXin.cbGeneratePrepayID" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:reciveStr];
+            [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGeneratePrepayID" arguments:ACArgsPack(@0,@1,reciveStr)];
+            [self.funcGeneratePrepayID executeWithArguments:ACArgsPack(@0,@1,reciveStr)];
+            self.funcGeneratePrepayID = nil;
+            self.func = nil;
+            
         }
     }
 
@@ -432,60 +458,96 @@
     NSRange range = [strUrl rangeOfString:@"&appid="];
     if (7 == range.length) {
         NSString *maxApiVer = @"获取access_token失败";
-        [self jsSuccessWithName:@"uexWeiXin.cbGetAccessToken" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
+        //[self jsSuccessWithName:@"uexWeiXin.cbGetAccessToken" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetAccessToken" arguments:ACArgsPack(@0,@0,maxApiVer)];
+        [self.func executeWithArguments:ACArgsPack(@0,@0,maxApiVer)];
+        self.func = nil;
     }else {
         range = [strUrl rangeOfString:@"?access_token="];
         if (14 == range.length) {
             NSString *maxApiVer = @"生成预付订单失败";
-            [self jsSuccessWithName:@"uexWeiXin.cbGenerateAdvanceOrder" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
-            [self jsSuccessWithName:@"uexWeiXin.cbGeneratePrepayID" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
+            //[self jsSuccessWithName:@"uexWeiXin.cbGenerateAdvanceOrder" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
+             [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGenerateAdvanceOrder" arguments:ACArgsPack(@0,@0,maxApiVer)];
+            [self.func executeWithArguments:ACArgsPack(@0,@0,maxApiVer)];
+            
+            //[self jsSuccessWithName:@"uexWeiXin.cbGeneratePrepayID" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:maxApiVer];
+             [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGeneratePrepayID" arguments:ACArgsPack(@0,@0,maxApiVer)];
+            [self.funcGeneratePrepayID executeWithArguments:ACArgsPack(@0,@0,maxApiVer)];
+            self.funcGeneratePrepayID = nil;
+            self.func = nil;
         }
     }
 
 }
 #pragma mark -
 #pragma mark - 微信分享
--(void)registerApp:(NSMutableArray *)inArguments{
+-(NSNumber*)registerApp:(NSMutableArray *)inArguments{
     NSString *appid = [inArguments objectAtIndex:0];
+    //ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     self.appID = appid;
     BOOL status = [WXApi registerApp:appid];
     if (status) {
-        [self jsSuccessWithName:@"uexWeiXin.cbRegisterApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        //[self jsSuccessWithName:@"uexWeiXin.cbRegisterApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbRegisterApp" arguments:ACArgsPack(@0,@2,@0)];
+        return @0;
     }else{
-        [self jsSuccessWithName:@"uexWeiXin.cbRegisterApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        //[self jsSuccessWithName:@"uexWeiXin.cbRegisterApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbRegisterApp" arguments:ACArgsPack(@0,@2,@1)];
+        return @1;
     }
 }
 -(void)isWXAppInstalled:(NSMutableArray *)inArguments{
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     BOOL isInstalled = [WXApi isWXAppInstalled];
     if (isInstalled) {
-        [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@0)];
+         [func executeWithArguments:ACArgsPack(@0,@2,@0)];
     }else{
-        [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@1)];
+         [func executeWithArguments:ACArgsPack(@0,@2,@1)];
     }
 }
 -(void)isWXAppSupportApi:(NSMutableArray *)inArguments{
+     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     BOOL isSupport = [WXApi isWXAppSupportApi];
     if (isSupport) {
-        [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppSupportApi" arguments:ACArgsPack(@0,@2,@0)];
+        [func executeWithArguments:ACArgsPack(@0,@2,@0)];
     }else{
-        [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+       // [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppSupportApi" arguments:ACArgsPack(@0,@2,@1)];
+        [func executeWithArguments:ACArgsPack(@0,@2,@1)];
     }
 }
 -(void)getApiVersion:(NSMutableArray *)inArguments{
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     NSString *sdkVer = [WXApi getApiVersion];
-    [self jsSuccessWithName:@"uexWeiXin.cbGetApiVersion" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:sdkVer];
+    //[self jsSuccessWithName:@"uexWeiXin.cbGetApiVersion" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:sdkVer];
+     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetApiVersion" arguments:ACArgsPack(@0,@0,sdkVer)];
+      [func executeWithArguments:ACArgsPack(@0,@0,sdkVer)];
 }
 
 -(void)getWXAppInstallUrl:(NSMutableArray *)inArguments{
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     NSString *installUrl = [WXApi getWXAppInstallUrl];
-    [self jsSuccessWithName:@"uexWeiXin.cbGetWXAppInstallUrl" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:installUrl];
+    //[self jsSuccessWithName:@"uexWeiXin.cbGetWXAppInstallUrl" opId:0 dataType:UEX_CALLBACK_DATATYPE_TEXT strData:installUrl];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWXAppInstallUrl" arguments:ACArgsPack(@0,@0,installUrl)];
+     [func executeWithArguments:ACArgsPack(@0,@0,installUrl)];
 }
 -(void)openWXApp:(NSMutableArray *)inArguments{
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     BOOL canOpen = [WXApi openWXApp];
     if (canOpen) {
-        [self jsSuccessWithName:@"uexWeiXin.cbOpenWXApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        //[self jsSuccessWithName:@"uexWeiXin.cbOpenWXApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbOpenWXApp" arguments:ACArgsPack(@0,@2,@0)];
+        [func executeWithArguments:ACArgsPack(@0,@2,@0)];
     }else{
-        [self jsSuccessWithName:@"uexWeiXin.cbOpenWXApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        //[self jsSuccessWithName:@"uexWeiXin.cbOpenWXApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWXAppInstallUrl" arguments:ACArgsPack(@0,@2,@1)];
+        [func executeWithArguments:ACArgsPack(@0,@2,@1)];
     }
 }
 //********************************微信授权登录,11.09后加的*********************
@@ -494,6 +556,7 @@
     if([inArguments count]<1){
         return;
     }
+   ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     id info = [inArguments[0] JSONValue];
     if([info isKindOfClass:[NSDictionary class]]){
         SendAuthReq* req =[[SendAuthReq alloc ] init];
@@ -501,7 +564,7 @@
         if ([info objectForKey:@"state"]) {
             req.state = [info objectForKey:@"state"];
         }
-        [self startWXRequest:req];
+        [self startWXRequest:req FunctionRef:func];
     }
 }
 
@@ -509,6 +572,8 @@
     if (inArguments.count<1) {
         return;
     }
+     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.func = func;
     id info = [inArguments[0] JSONValue];
     if([info isKindOfClass:[NSDictionary class]]){
         weixinSecret = [info objectForKey:@"secret"];
@@ -536,15 +601,20 @@
     NSString *access_tokenJson =[NSString stringWithFormat:@"%@",[self.access_tokenDict JSONFragment]];
     // NSLog(@"access_tokenJson------>>%@",access_tokenJson);
  
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginAccessToken != null){uexWeiXin.cbGetLoginAccessToken('%@');}",access_tokenJson];
-    [EUtility brwView:meBrwView evaluateScript:cbStr];
+   // NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginAccessToken != null){uexWeiXin.cbGetLoginAccessToken('%@');}",access_tokenJson];
+    //[EUtility brwView:meBrwView evaluateScript:cbStr];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginAccessToken" arguments:ACArgsPack(access_tokenJson)];
+    [self.func executeWithArguments:ACArgsPack(access_tokenJson)];
+    self.func = nil;
 }
 
 - (void)getLoginCheckAccessToken:(NSMutableArray *)inArguments{
-    
+
     if (inArguments.count <1) {
         return;
     }
+     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.func = func;
     id info = [inArguments[0] JSONValue];
     if([info isKindOfClass:[NSDictionary class]]){
         NSString *access_token = [info objectForKey:@"access_token"];
@@ -559,6 +629,7 @@
                 if (data) {
                     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
                     [self cbGetLoginCheckAccessToken:[dict JSONFragment]];
+                    
                 }
             });
             
@@ -566,8 +637,11 @@
     }
 }
 - (void)cbGetLoginCheckAccessToken:cbData {
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginCheckAccessToken != null){uexWeiXin.cbGetLoginCheckAccessToken('%@');}",cbData];
-    [EUtility brwView:meBrwView evaluateScript:cbStr];
+    //NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginCheckAccessToken != null){uexWeiXin.cbGetLoginCheckAccessToken('%@');}",cbData];
+    //[EUtility brwView:meBrwView evaluateScript:cbStr];
+     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginCheckAccessToken" arguments:ACArgsPack(cbData)];
+    [self.func executeWithArguments:ACArgsPack(cbData)];
+    self.func = nil;
 }
 
 - (void)getLoginRefreshAccessToken:(NSMutableArray *)inArguments{
@@ -575,6 +649,8 @@
     if (inArguments.count <1) {
         return;
     }
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.func = func;
     id info = [inArguments[0] JSONValue];
     if([info isKindOfClass:[NSDictionary class]]){
         NSString *grantType  = [info objectForKey:@"grant_type"];
@@ -599,8 +675,12 @@
 }
 
 - (void) cbGetLoginRefreshAccessToken {
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginRefreshAccessToken != null){uexWeiXin.cbGetLoginRefreshAccessToken('%@');}",[self.refreshAccessTokenDict JSONFragment]];
-    [EUtility brwView:meBrwView evaluateScript:cbStr];
+    //NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginRefreshAccessToken != null){uexWeiXin.cbGetLoginRefreshAccessToken('%@');}",[self.refreshAccessTokenDict JSONFragment]];
+    //[EUtility brwView:meBrwView evaluateScript:cbStr];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginRefreshAccessToken" arguments:ACArgsPack([self.refreshAccessTokenDict JSONFragment])];
+    [self.func executeWithArguments:ACArgsPack([self.refreshAccessTokenDict JSONFragment])];
+    self.func = nil;
+
 }
 
 - (void)getLoginUnionID:(NSMutableArray *)inArguments {
@@ -608,6 +688,8 @@
     if (inArguments.count <1) {
         return;
     }
+     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+    self.func = func;
     id info = [inArguments[0] JSONValue];
     if([info isKindOfClass:[NSDictionary class]]){
         NSString *access_token = [info objectForKey:@"access_token"];
@@ -632,20 +714,24 @@
 }
 
 - (void)cbGetLoginUnionID {
-    NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginUnionID != null){uexWeiXin.cbGetLoginUnionID('%@');}",[self.userInfoDict JSONFragment]];
-    [EUtility brwView:meBrwView evaluateScript:cbStr];
+    //NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginUnionID != null){uexWeiXin.cbGetLoginUnionID('%@');}",[self.userInfoDict JSONFragment]];
+    //[EUtility brwView:meBrwView evaluateScript:cbStr];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginUnionID" arguments:ACArgsPack([self.userInfoDict JSONFragment])];
+    [self.func executeWithArguments:ACArgsPack([self.userInfoDict JSONFragment])];
+    self.func = nil;
 }
 //********************************微信授权登录*********************
 #pragma mark -- 微信登录授权
 - (void)weiXinLogin:(NSMutableArray *)inArguments {
     
     if (inArguments.count >0) {
+        ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
         SendAuthReq* req =[[SendAuthReq alloc ] init];
         req.scope = [inArguments objectAtIndex:0];
         if (inArguments.count >1) {
             req.state = [inArguments objectAtIndex:1];
         }
-        [self startWXRequest:req];
+        [self startWXRequest:req FunctionRef:func];
     }else {
         return;
     }
@@ -657,6 +743,8 @@
     if (inArguments.count>1) {
         weixinSecret = [inArguments objectAtIndex:0];
         grant_type = [inArguments objectAtIndex:1];
+        ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+        self.func = func;
     }
     
     [self getAccess_token];
@@ -682,7 +770,9 @@
     NSString *access_tokenJson =[NSString stringWithFormat:@"%@",[self.access_tokenDict JSONFragment]];
     // NSLog(@"access_tokenJson------>>%@",access_tokenJson);
     
-    [self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginAccessToken"opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:access_tokenJson];
+    //[self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginAccessToken"opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:access_tokenJson];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWeiXinLoginAccessToken" arguments:ACArgsPack(@0,@1,access_tokenJson)];
+    [self.func executeWithArguments:ACArgsPack(@0,@1,access_tokenJson)];
 }
 
 #pragma  mark -- 检验access_token是否有效
@@ -692,7 +782,8 @@
         NSString *access_token = [inArguments objectAtIndex:0];
         NSString *openid = [inArguments objectAtIndex:1];
         NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/auth?access_token=%@&openid=%@",access_token,openid];
-        
+        ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+        self.func = func;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSURL *zoneUrl = [NSURL URLWithString:url];
             NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
@@ -711,9 +802,13 @@
 }
 - (void)cbGetWXLoginCheckAccessToken {
     if(self.WXCheckAccessTokenErrcode == 0){
-        [self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginCheckAccessToken"  opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+       // [self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginCheckAccessToken"  opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWeiXinLoginCheckAccessToken" arguments:ACArgsPack(@0,@2,@0)];
+        [self.func executeWithArguments:ACArgsPack(@0,@2,@0)];
     }else{
-        [self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginCheckAccessToken"  opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFALSE];
+        //[self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginCheckAccessToken"  opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFALSE];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWeiXinLoginCheckAccessToken" arguments:ACArgsPack(@0,@2,@1)];
+         [self.func executeWithArguments:ACArgsPack(@0,@2,@1)];
     }
     
 }
@@ -726,7 +821,8 @@
         NSString *refresh_token = [inArguments objectAtIndex:1];
         
         NSString *url =[NSString stringWithFormat:@"https://api.weixin.qq.com/sns/oauth2/refresh_token?appid=%@&grant_type=%@&refresh_token=%@",self.appID,grantType,refresh_token];
-        
+          ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+        self.func = func;
         dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
             NSURL *zoneUrl = [NSURL URLWithString:url];
             NSString *zoneStr = [NSString stringWithContentsOfURL:zoneUrl encoding:NSUTF8StringEncoding error:nil];
@@ -744,7 +840,10 @@
 }
 
 - (void) cbGetWXLoginRefreshAccessToken {
-    [self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginRefreshAccessToken" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:[self.refreshAccessTokenDict JSONFragment]];
+    //[self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginRefreshAccessToken" opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:[self.refreshAccessTokenDict JSONFragment]];
+     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWeiXinLoginRefreshAccessToken" arguments:ACArgsPack(@0,@1,[self.refreshAccessTokenDict JSONFragment])];
+    [self.func executeWithArguments:ACArgsPack(@0,@1,[self.refreshAccessTokenDict JSONFragment])];
+    self.func = nil;
 }
 
 #pragma mark -- 获取个人信息
@@ -753,6 +852,8 @@
     if (inArguments.count >1) {
         NSString *access_token = [inArguments objectAtIndex:0];
         NSString *openid = [inArguments objectAtIndex:1];
+          ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+        self.func = func;
         [self getUserInfo:access_token openID:openid];
     }else{
         return;
@@ -778,7 +879,10 @@
 }
 
 - (void)cbGetWXLoginUnionID {
-    [self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginUnionID"opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:[self.userInfoDict JSONFragment]];
+    //[self jsSuccessWithName:@"uexWeiXin.cbGetWeiXinLoginUnionID"opId:0 dataType:UEX_CALLBACK_DATATYPE_JSON strData:[self.userInfoDict JSONFragment]];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWeiXinLoginUnionID" arguments:ACArgsPack(@0,@1,[self.userInfoDict JSONFragment])];
+    [self.func executeWithArguments:ACArgsPack(@0,@1,[self.userInfoDict JSONFragment])];
+    self.func = nil;
 }
 
 -(void)sendTextContent:(NSMutableArray *)inArguments{
@@ -788,8 +892,9 @@
     req.bText = YES;
     req.text = [inArguments objectAtIndex:1];
     req.scene = [[inArguments objectAtIndex:0] intValue];
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeTextContent;
-    [self startWXRequest:req];
+    [self startWXRequest:req FunctionRef:func];
 }
 
 - (void) sendImageContent:(NSMutableArray *)inArguments{
@@ -798,7 +903,7 @@
     //32K
     NSString *thumbImgPath = [inArguments objectAtIndex:1];
     NSString *realImgPath = [self absPath:[inArguments objectAtIndex:2]];
-    
+    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     WXMediaMessage *message = [WXMediaMessage message];
     if (![thumbImgPath hasPrefix:@"http"]) {
         thumbImgPath = [self absPath:thumbImgPath];
@@ -840,15 +945,16 @@
     req.message = message;
     req.scene = scene;
     [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypePicture;
-   [self startWXRequest:req];
+   [self startWXRequest:req FunctionRef:func];
 
 }
 /////////////////新增接口//////////////////////////////
 -(void)shareTextContent:(NSMutableArray *)inArguments{
-    
+    ACJSFunctionRef *func = nil;
     NSString *jsonData = nil;
     if ([inArguments count] > 0) {
         jsonData = [inArguments objectAtIndex:0];
+        func = JSFunctionArg(inArguments.lastObject);
     }
     
     NSMutableDictionary *jsonDataDict = [jsonData JSONValue];
@@ -863,15 +969,16 @@
     req.text = text;
     req.scene = scene;
     [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeText;
-    [self startWXRequest:req];
+    [self startWXRequest:req FunctionRef:func];
 }
 
 - (void)shareLinkContent:(NSMutableArray *)inArguments{
     
     NSString *jsonData = nil;
-
+    ACJSFunctionRef *func = nil;
     if ([inArguments count] > 0) {
       jsonData = [inArguments objectAtIndex:0];
+          func = JSFunctionArg(inArguments.lastObject);
     }
     
     NSMutableDictionary *jsonDataDict = [jsonData JSONValue];
@@ -912,14 +1019,16 @@
     req.message = message;
     req.scene = scene;
     [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeLink;
-    [self startWXRequest:req];
+    [self startWXRequest:req FunctionRef:func];
 
 }
 
 - (void)shareImageContent:(NSMutableArray *)inArguments {
     NSString *jsonData = nil;
+    ACJSFunctionRef *func = nil;
     if ([inArguments count] > 0) {
         jsonData = [inArguments objectAtIndex:0];
+          func = JSFunctionArg(inArguments.lastObject);
     }
     
     NSMutableDictionary *jsonDataDict = [jsonData JSONValue];
@@ -956,7 +1065,7 @@
         req.message = message;
         req.scene = scene;
         [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypePhoto;
-        [self startWXRequest:req];
+        [self startWXRequest:req FunctionRef:func];
 
     }
 }
@@ -1000,7 +1109,7 @@
 
     EBrowserWindow *window=[eBrwWndContainer.mBrwWndDict objectForKey:winName];
     if (window && window.meBrwView) {
-        [uexWeiXinResponder sharedResponder].specifiedReceiver=window.meBrwView;
+        [uexWeiXinResponder sharedResponder].specifiedReceiver = (id<AppCanWebViewEngineObject>)window.meBrwView;
     }
 }
 
@@ -1010,8 +1119,9 @@
 #pragma mark -
 #pragma mark - private
 
-- (void)startWXRequest:(BaseReq *)req{
-    [uexWeiXinResponder sharedResponder].receiver=self.meBrwView;
+- (void)startWXRequest:(BaseReq *)req FunctionRef:(ACJSFunctionRef*)fun{
+    [uexWeiXinResponder sharedResponder].receiver= (id<AppCanWebViewEngineObject>)self.meBrwView;
+    [uexWeiXinResponder sharedResponder].func = fun;
     [WXApi sendReq:req];
 }
 
