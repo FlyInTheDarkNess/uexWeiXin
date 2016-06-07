@@ -146,13 +146,15 @@
     
     NSString *JSONString;
     JSONString=[NSString stringWithFormat:@"uexWeiXin.%@",func];
+   
     switch (type) {
         case 0:
         case 1:
         case 2:{
             ///JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@(0,%ld,'%@');}",func,func,(long)type,cbData];
              [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(@0,@(type),cbData)];
-            [fun executeWithArguments:ACArgsPack(@0,@(type),cbData)];
+            [fun executeWithArguments:ACArgsPack(cbData)];
+           
             break;
         }
         default:{
@@ -163,9 +165,8 @@
             break;
         }
     }
-    self.func = nil;
     //[EUtility brwView:self.specifiedReceiver?:self.receiver evaluateScript:JSONString];
-    
+     self.func = nil;
 }
 
 
