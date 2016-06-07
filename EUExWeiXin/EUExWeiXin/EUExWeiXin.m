@@ -496,17 +496,20 @@
         return @1;
     }
 }
--(void)isWXAppInstalled:(NSMutableArray *)inArguments{
+-(NSNumber*)isWXAppInstalled:(NSMutableArray *)inArguments{
+    
     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     BOOL isInstalled = [WXApi isWXAppInstalled];
     if (isInstalled) {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
           [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@0)];
          [func executeWithArguments:ACArgsPack(@0,@2,@0)];
+        return @0;
     }else{
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
           [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@1)];
          [func executeWithArguments:ACArgsPack(@0,@2,@1)];
+        return @1;
     }
 }
 -(void)isWXAppSupportApi:(NSMutableArray *)inArguments{
