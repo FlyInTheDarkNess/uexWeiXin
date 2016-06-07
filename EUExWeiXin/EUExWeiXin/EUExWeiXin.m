@@ -549,7 +549,7 @@
         [func executeWithArguments:ACArgsPack(@0)];
     }else{
         //[self jsSuccessWithName:@"uexWeiXin.cbOpenWXApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetWXAppInstallUrl" arguments:ACArgsPack(@0,@2,@1)];
+         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbOpenWXApp" arguments:ACArgsPack(@0,@2,@1)];
         [func executeWithArguments:ACArgsPack(@1)];
     }
 }
