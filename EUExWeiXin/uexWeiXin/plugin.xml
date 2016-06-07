@@ -6,8 +6,8 @@
         <method name="generateAdvanceOrder"></method>
         <method name="getAccessToken"></method>
         <method name="getAccessTokenLocal"></method>
-        <method name="registerApp"></method>
-        <method name="isWXAppInstalled"></method>
+        <method name="registerApp" sync = "true"></method>
+        <method name="isWXAppInstalled" sync = "true"></method>
         <method name="isWXAppSupportApi"></method>
         <method name="getWXAppSupportMaxApiVersion"></method>
         <method name="getApiVersion"></method>
