@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
     <plugin name="uexWeiXin">
-        <method name="isSupportPay"></method>
+        <method name="isSupportPay" sync = "true"></method>
         <method name="gotoPay"></method>
         <method name="generateAdvanceOrder"></method>
         <method name="getAccessToken"></method>

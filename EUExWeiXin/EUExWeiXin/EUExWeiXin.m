@@ -42,17 +42,16 @@
 #pragma mark -
 #pragma mark - 微信支付
 
--(void)isSupportPay:(NSMutableArray *)inArguments {
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+-(NSNumber*)isSupportPay:(NSMutableArray *)inArguments{
     BOOL isSupportApi = [WXApi isWXAppSupportApi];
     if (isSupportApi) {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:0];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@0)];
-        [func executeWithArguments:ACArgsPack(@0)];
+        return @0;
     }else {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:1];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@1)];
-        [func executeWithArguments:ACArgsPack(@1)];
+        return @1;
     }
 }
 
@@ -321,10 +320,9 @@
     
     //开始解析
     [xml startParse:res];
-    
     NSMutableDictionary *resultDict = [xml getDict];
     NSString *result=[resultDict JSONFragment];
-    //NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
+   // NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
     //[EUtility brwView:self.meBrwView evaluateScript:jsonStr];
     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetPrepayId" arguments:ACArgsPack(result)];
     [func executeWithArguments:ACArgsPack(result)];
@@ -490,26 +488,27 @@
         //[self jsSuccessWithName:@"uexWeiXin.cbRegisterApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbRegisterApp" arguments:ACArgsPack(@0,@2,@0)];
         return @0;
+        
     }else{
         //[self jsSuccessWithName:@"uexWeiXin.cbRegisterApp" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbRegisterApp" arguments:ACArgsPack(@0,@2,@1)];
         return @1;
     }
+    
 }
 -(NSNumber*)isWXAppInstalled:(NSMutableArray *)inArguments{
     
-    ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
     BOOL isInstalled = [WXApi isWXAppInstalled];
     if (isInstalled) {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
           [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@0)];
-         [func executeWithArguments:ACArgsPack(@0)];
         return @0;
+        
     }else{
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
           [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@1)];
-         [func executeWithArguments:ACArgsPack(@1)];
         return @1;
+        
     }
 }
 -(void)isWXAppSupportApi:(NSMutableArray *)inArguments{
@@ -1129,6 +1128,7 @@
     [uexWeiXinResponder sharedResponder].receiver= (id<AppCanWebViewEngineObject>)self.meBrwView;
     [uexWeiXinResponder sharedResponder].func = fun;
     [WXApi sendReq:req];
+    //NSLog(@"startWXRequest:%d",is);
 }
 
 
