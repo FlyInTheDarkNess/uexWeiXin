@@ -1,13 +1,13 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
     <plugin name="uexWeiXin">
-        <method name="isSupportPay" sync = "true"></method>
+        <method name="isSupportPay"></method>
         <method name="gotoPay"></method>
         <method name="generateAdvanceOrder"></method>
         <method name="getAccessToken"></method>
         <method name="getAccessTokenLocal"></method>
-        <method name="registerApp" sync = "true"></method>
-        <method name="isWXAppInstalled" sync = "true"></method>
+        <method name="registerApp"></method>
+        <method name="isWXAppInstalled"></method>
         <method name="isWXAppSupportApi"></method>
         <method name="getWXAppSupportMaxApiVersion"></method>
         <method name="getApiVersion"></method>

@@ -61,9 +61,9 @@
             [dict setValue:response.errStr forKey:@"errStr"];
         }
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), globalQueue, ^{
-            [self callbackWithFunction:@"cbGotoPay" object:dict cbType:UEX_CALLBACK_DATATYPE_JSON FunctionRef:self.func];
-            [self callbackWithFunction:@"cbSendPay" object:dict cbType:UEX_CALLBACK_DATATYPE_JSON FunctionRef:self.func];
-            [self callbackWithFunction:@"cbStartPay" object:dict cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbGotoPay" object:dict cbType:UEX_CALLBACK_DATATYPE_JSON];
+            [self callbackWithFunction:@"cbSendPay" object:dict cbType:UEX_CALLBACK_DATATYPE_JSON];
+            [self callbackWithFunction:@"cbStartPay" object:dict cbType:UEX_CALLBACK_NEW_FORMAT];
         });
 
         
@@ -85,8 +85,8 @@
         [result setValue:authResp.lang forKey:@"language"];
         [result setValue:@(authResp.errCode) forKey:@"errCode"];
         dispatch_after(dispatch_time(DISPATCH_TIME_NOW, (int64_t)(1 * NSEC_PER_SEC)), globalQueue, ^{
-            [self callbackWithFunction:@"cbLogin" object:result cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
-            [self callbackWithFunction:@"cbWeiXinLogin" object:@(errorCode) cbType:UEX_CALLBACK_DATATYPE_INT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbLogin" object:result cbType:UEX_CALLBACK_NEW_FORMAT];
+            [self callbackWithFunction:@"cbWeiXinLogin" object:@(errorCode) cbType:UEX_CALLBACK_DATATYPE_INT];
         });
         
 
@@ -104,23 +104,23 @@
             break;
         }
         case uexWeiXinShareTypeTextContent: {
-            [self callbackWithFunction:@"cbSendTextContent" object:code cbType:UEX_CALLBACK_DATATYPE_INT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbSendTextContent" object:code cbType:UEX_CALLBACK_DATATYPE_INT];
             break;
         }
         case uexWeiXinShareTypePicture: {
-            [self callbackWithFunction:@"cbSendImageContent" object:code cbType:UEX_CALLBACK_DATATYPE_INT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbSendImageContent" object:code cbType:UEX_CALLBACK_DATATYPE_INT];
             break;
         }
         case uexWeiXinShareTypePhoto: {
-            [self callbackWithFunction:@"cbShareImageContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbShareImageContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT];
             break;
         }
         case uexWeiXinShareTypeLink: {
-            [self callbackWithFunction:@"cbShareLinkContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbShareLinkContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT];
             break;
         }
         case uexWeiXinShareTypeText: {
-            [self callbackWithFunction:@"cbShareTextContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
+            [self callbackWithFunction:@"cbShareTextContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT];
             break;
         }
     }
@@ -131,7 +131,7 @@
 
 
 
-- (void)callbackWithFunction:(NSString *)func object:(id)obj cbType:(NSInteger)type FunctionRef:(ACJSFunctionRef*)fun{
+- (void)callbackWithFunction:(NSString *)func object:(id)obj cbType:(NSInteger)type{
     NSString *cbData=nil;
     if ([obj isKindOfClass:[NSString class]] ) {
         cbData=obj;
@@ -145,28 +145,21 @@
     }
     
     NSString *JSONString;
-    JSONString=[NSString stringWithFormat:@"uexWeiXin.%@",func];
-   
+    
     switch (type) {
         case 0:
         case 1:
         case 2:{
-            ///JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@(0,%ld,'%@');}",func,func,(long)type,cbData];
-             [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(@0,@(type),cbData)];
-            [fun executeWithArguments:ACArgsPack(cbData)];
-           
+            JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@(0,%ld,'%@');}",func,func,(long)type,cbData];
             break;
         }
         default:{
-            //JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@('%@');}",func,func,cbData];
-            
-             [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(cbData)];
-            [fun executeWithArguments:ACArgsPack(cbData)];
+            JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@('%@');}",func,func,cbData];
             break;
         }
     }
-    //[EUtility brwView:self.specifiedReceiver?:self.receiver evaluateScript:JSONString];
-     self.func = nil;
+    
+    [EUtility brwView:self.specifiedReceiver?:self.receiver evaluateScript:JSONString];
 }
 
 

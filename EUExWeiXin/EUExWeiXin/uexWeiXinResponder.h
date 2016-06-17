@@ -38,12 +38,12 @@ typedef NS_ENUM(NSInteger,uexWeiXinShareType) {
 
 
 @interface uexWeiXinResponder : NSObject<WXApiDelegate>
-@property (nonatomic, weak) id<AppCanWebViewEngineObject> receiver;
-@property (nonatomic, weak) id<AppCanWebViewEngineObject> specifiedReceiver;
+@property (nonatomic,weak)EBrowserView *receiver;
+@property (nonatomic,weak)EBrowserView *specifiedReceiver;
 @property (nonatomic,assign)uexWeiXinShareType currentShareType;
 
 @property (nonatomic,strong)NSString *loginCode;
-@property(nonatomic,strong)ACJSFunctionRef*func;
+
 
 + (instancetype)sharedResponder;
 
