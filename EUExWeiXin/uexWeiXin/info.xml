@@ -1,23 +1,22 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexWeiXin" version="3.0.20" build="20">
-        <info>20:更新SDK版本至1.7.0,支持兼容ipv6</info>
-        <build>19:修复getWeiXinLoginAccessToken失败的bug</build>
-        <build>18:修改回调方式，支持setCallbackWindowName接口;部分支持IDE</build>
-        <build>17:新增一版微信登陆相关接口</build>
-        <build>16:微信分享纯图片添加可选参数title</build>
-        <build>15:uexWeiXin.cbStartPay 回调结构修正</build>
-        <build>14:新增接口getPrepayId和startPay及相应回调，以支持V3 V4支付</build>
-        <build>13:增加微信授权登录的五个接口以及相对应的回调方法</build>
-        <build>12:支持arm64</build>
-        <build>11:修改shareLinkContent,shareImageContent,shareTextContent三个接口的回调</build>
-        <build>10:增加shareLinkContent,shareImageContent,shareTextContent三个接口</build>
-        <build>9:修复获取预支付订单失败的问题</build>
-        <build>8:调整微信支付接口</build>
-        <build>7:修复微信分享回调只是返回0的bug</build>
-        <build>6:统一回调方法名，统一回调参数</build>
-        <build>5:修正微信分享HTTP图片失败的bug,添加分享成功回调</build>
-        <bulid>4:修正微信分享照片失败的bug</bulid>
-        <bulid>0:微信分享功能插件</bulid>
-	</plugin>
+  <plugin uexName="uexWeiXin" version="3.0.21" build="21">
+    <info>21: IDE证书更新</info>
+    <build>20: 更新SDK版本至1.7.0,支持兼容ipv6</build>
+    <build>19: 修复getWeiXinLoginAccessToken失败的bug</build>
+    <build>18: 修改回调方式，支持setCallbackWindowName接口;部分支持IDE</build>
+    <build>17: 新增一版微信登陆相关接口</build>
+    <build>16: 微信分享纯图片添加可选参数title</build>
+    <build>15: uexWeiXin.cbStartPay 回调结构修正</build>
+    <build>14: 新增接口getPrepayId和startPay及相应回调，以支持V3 V4支付</build>
+    <build>13: 增加微信授权登录的五个接口以及相对应的回调方法</build>
+    <build>12: 支持arm64</build>
+    <build>11: 修改shareLinkContent,shareImageContent,shareTextContent三个接口的回调</build>
+    <build>10: 增加shareLinkContent,shareImageContent,shareTextContent三个接口</build>
+    <build>9: 修复获取预支付订单失败的问题</build>
+    <build>8: 调整微信支付接口</build>
+    <build>7: 修复微信分享回调只是返回0的bug</build>
+    <build>6: 统一回调方法名，统一回调参数</build>
+    <build>5: 修正微信分享HTTP图片失败的bug,添加分享成功回调</build>
+  </plugin>
 </uexplugins>
