@@ -47,12 +47,13 @@
     if (isSupportApi) {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:0];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@0)];
-        return @0;
+        
     }else {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:1];
-         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@1)];
-        return @1;
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@1)];
+        
     }
+    return @(isSupportApi);
 }
 
 -(void)getAccessToken:(NSMutableArray *)inArguments {
@@ -501,28 +502,27 @@
     BOOL isInstalled = [WXApi isWXAppInstalled];
     if (isInstalled) {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
-          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@0)];
-        return @0;
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@0)];
+        
         
     }else{
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
-          [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@1)];
-        return @1;
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@1)];
         
     }
+    return @(isInstalled);
 }
--(void)isWXAppSupportApi:(NSMutableArray *)inArguments{
-     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);
+-(NSNumber*)isWXAppSupportApi:(NSMutableArray *)inArguments{
     BOOL isSupport = [WXApi isWXAppSupportApi];
     if (isSupport) {
         //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppSupportApi" arguments:ACArgsPack(@0,@2,@0)];
-        [func executeWithArguments:ACArgsPack(@0)];
     }else{
-       // [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        // [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
         [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppSupportApi" arguments:ACArgsPack(@0,@2,@1)];
-        [func executeWithArguments:ACArgsPack(@1)];
+        
     }
+    return @(isSupport);
 }
 -(void)getApiVersion:(NSMutableArray *)inArguments{
     ACJSFunctionRef *func = JSFunctionArg(inArguments.lastObject);

@@ -8,7 +8,7 @@
         <method name="getAccessTokenLocal"></method>
         <method name="registerApp" sync = "true"></method>
         <method name="isWXAppInstalled" sync = "true"></method>
-        <method name="isWXAppSupportApi"></method>
+        <method name="isWXAppSupportApi" sync = "true"></method>
         <method name="getWXAppSupportMaxApiVersion"></method>
         <method name="getApiVersion"></method>
         <method name="getWXAppInstallUrl"></method>
