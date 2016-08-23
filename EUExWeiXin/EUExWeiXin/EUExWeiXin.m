@@ -326,7 +326,7 @@
    // NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
     //[EUtility brwView:self.meBrwView evaluateScript:jsonStr];
     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetPrepayId" arguments:ACArgsPack(result)];
-    [func executeWithArguments:ACArgsPack(result)];
+    [func executeWithArguments:ACArgsPack([resultDict copy])];
 }
 #pragma mark - 发起支付
 -(void)startPay:(NSMutableArray *)inArgument{
