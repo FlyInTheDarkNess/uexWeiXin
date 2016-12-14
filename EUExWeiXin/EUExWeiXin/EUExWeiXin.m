@@ -50,10 +50,21 @@
 -(void)isSupportPay:(NSMutableArray *)inArguments {
     BOOL isSupportApi = [WXApi isWXAppSupportApi];
     if (isSupportApi) {
+<<<<<<< HEAD
         [self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:0];
     }else {
         [self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:1];
+=======
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:0];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@0)];
+        
+    }else {
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsSupportPay" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:1];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsSupportPay" arguments:ACArgsPack(@0,@2,@1)];
+        
+>>>>>>> 4.0+
     }
+    return @(isSupportApi);
 }
 
 -(void)getAccessToken:(NSMutableArray *)inArguments {
@@ -311,9 +322,16 @@
     
     NSMutableDictionary *resultDict = [xml getDict];
     NSString *result=[resultDict JSONFragment];
+<<<<<<< HEAD
     NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
     [EUtility brwView:self.meBrwView evaluateScript:jsonStr];
 
+=======
+   // NSString *jsonStr = [NSString stringWithFormat:@"if(uexWeiXin.cbGetPrepayId != null){uexWeiXin.cbGetPrepayId('%@');}",result];
+    //[EUtility brwView:self.meBrwView evaluateScript:jsonStr];
+    [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetPrepayId" arguments:ACArgsPack(result)];
+    [func executeWithArguments:ACArgsPack([resultDict copy])];
+>>>>>>> 4.0+
 }
 #pragma mark - 发起支付
 -(void)startPay:(NSMutableArray *)inArgument{
@@ -458,18 +476,43 @@
 -(void)isWXAppInstalled:(NSMutableArray *)inArguments{
     BOOL isInstalled = [WXApi isWXAppInstalled];
     if (isInstalled) {
+<<<<<<< HEAD
         [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
     }else{
         [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+=======
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@0)];
+        
+        
+    }else{
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppInstalled" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppInstalled" arguments:ACArgsPack(@0,@2,@1)];
+        
+>>>>>>> 4.0+
     }
+    return @(isInstalled);
 }
+<<<<<<< HEAD
 -(void)isWXAppSupportApi:(NSMutableArray *)inArguments{
     BOOL isSupport = [WXApi isWXAppSupportApi];
     if (isSupport) {
         [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
     }else{
         [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+=======
+-(NSNumber*)isWXAppSupportApi:(NSMutableArray *)inArguments{
+    BOOL isSupport = [WXApi isWXAppSupportApi];
+    if (isSupport) {
+        //[self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CSUCCESS];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppSupportApi" arguments:ACArgsPack(@0,@2,@0)];
+    }else{
+        // [self jsSuccessWithName:@"uexWeiXin.cbIsWXAppSupportApi" opId:0 dataType:UEX_CALLBACK_DATATYPE_INT intData:UEX_CFAILED];
+        [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbIsWXAppSupportApi" arguments:ACArgsPack(@0,@2,@1)];
+        
+>>>>>>> 4.0+
     }
+    return @(isSupport);
 }
 -(void)getApiVersion:(NSMutableArray *)inArguments{
     NSString *sdkVer = [WXApi getApiVersion];

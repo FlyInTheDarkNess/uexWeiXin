@@ -136,7 +136,7 @@
     if ([obj isKindOfClass:[NSString class]] ) {
         cbData=obj;
     }else if([obj isKindOfClass:[NSNumber class]]){
-        cbData=[obj stringValue];
+        cbData = obj;
     }else{
         cbData=[obj JSONFragment];
     }
