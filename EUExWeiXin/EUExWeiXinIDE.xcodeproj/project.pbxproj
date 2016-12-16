@@ -378,10 +378,9 @@
 		034BF52018B2E9BA0074D5B7 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_IDENTIFIER = com.appcan.ide;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Sea King Biological Technology Co., Ltd.";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/uexWeiXin/IDE/";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
@@ -408,7 +407,7 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = uexWeiXin;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "756a3ff2-be53-4d08-862a-c050d0dfa3d9";
 				SKIP_INSTALL = YES;
 			};
 			name = Debug;
@@ -416,10 +415,9 @@
 		034BF52118B2E9BA0074D5B7 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
-				ALWAYS_SEARCH_USER_PATHS = NO;
 				BUNDLE_IDENTIFIER = com.appcan.ide;
 				CLANG_ENABLE_OBJC_ARC = YES;
-				CODE_SIGN_IDENTITY = "";
+				CODE_SIGN_IDENTITY = "iPhone Distribution: Hangzhou Sea King Biological Technology Co., Ltd.";
 				CONFIGURATION_BUILD_DIR = "$(SRCROOT)/uexWeiXin/IDE/";
 				DEBUG_INFORMATION_FORMAT = dwarf;
 				DEFINES_MODULE = YES;
@@ -446,7 +444,7 @@
 				);
 				OTHER_LDFLAGS = "-ObjC";
 				PRODUCT_NAME = uexWeiXin;
-				PROVISIONING_PROFILE = "";
+				PROVISIONING_PROFILE = "756a3ff2-be53-4d08-862a-c050d0dfa3d9";
 				SKIP_INSTALL = YES;
 			};
 			name = Release;

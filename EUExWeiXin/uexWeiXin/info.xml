@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
     <plugin uexName="uexWeiXin" version="4.0.0" build="0">
-        <info>0:uexWeiXin支持引擎4.0</info>
+        <info>0:uexWeiXin支持引擎4.0，函数入参</info>
 	</plugin>
 </uexplugins>
