@@ -6,27 +6,11 @@
 	<dict>
 		<key>Info.plist</key>
 		<data>
-		hcaOu4gvnT/FGkFqD66eIc6fBR4=
-		</data>
-		<key>embedded.mobileprovision</key>
-		<data>
-		JKbXoT98W7zj86Z2W3qbeHZe/kE=
+		W6XadKmD41VWh9cslVE3rt+N9J0=
 		</data>
 	</dict>
 	<key>files2</key>
-	<dict>
-		<key>embedded.mobileprovision</key>
-		<dict>
-			<key>hash</key>
-			<data>
-			JKbXoT98W7zj86Z2W3qbeHZe/kE=
-			</data>
-			<key>hash2</key>
-			<data>
-			0p8akoZIUNhnEHSrm+cwtP59I1VEbMUe0Gn2IpgCK98=
-			</data>
-		</dict>
-	</dict>
+	<dict/>
 	<key>rules</key>
 	<dict>
 		<key>^</key>
@@ -44,6 +28,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^version.plist$</key>
 		<true/>
@@ -89,6 +78,11 @@
 			<true/>
 			<key>weight</key>
 			<real>1100</real>
+		</dict>
+		<key>^Base\.lproj/</key>
+		<dict>
+			<key>weight</key>
+			<real>1010</real>
 		</dict>
 		<key>^Info\.plist$</key>
 		<dict>

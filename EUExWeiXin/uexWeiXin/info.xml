@@ -1,6 +1,7 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexWeiXin" version="4.0.0" build="0">
-        <info>0:uexWeiXin支持引擎4.0，函数入参</info>
+    <plugin uexName="uexWeiXin" version="4.0.1" build="1">
+        <info>1:SDK升级至1.7.5</info>
+        <build>0:微信插件 for iOS</build>
 	</plugin>
 </uexplugins>
