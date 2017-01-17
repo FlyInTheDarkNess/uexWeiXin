@@ -132,15 +132,19 @@
 
 
 - (void)callbackWithFunction:(NSString *)func object:(id)obj cbType:(NSInteger)type FunctionRef:(ACJSFunctionRef*)fun{
-    NSString *cbData=nil;
+    NSString *cbDataString=nil;
+    id cbDataJson = nil;
     if ([obj isKindOfClass:[NSString class]] ) {
-        cbData=obj;
+        cbDataString=obj;
+        cbDataJson = [obj JSONValue];
     }else if([obj isKindOfClass:[NSNumber class]]){
-        cbData = obj;
+        cbDataString = obj;
+        cbDataJson = obj;
     }else{
-        cbData=[obj JSONFragment];
+        cbDataString=[obj JSONFragment];
+        cbDataJson = obj;
     }
-    if(!cbData){
+    if(!cbDataString || !cbDataJson){
         return;
     }
     
@@ -152,16 +156,16 @@
         case 1:
         case 2:{
             ///JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@(0,%ld,'%@');}",func,func,(long)type,cbData];
-             [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(@0,@(type),cbData)];
-            [fun executeWithArguments:ACArgsPack(cbData)];
+             [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(@0,@(type),cbDataString)];
+            [fun executeWithArguments:ACArgsPack(cbDataJson)];
            
             break;
         }
         default:{
             //JSONString=[NSString stringWithFormat:@"if (uexWeiXin.%@ != null){uexWeiXin.%@('%@');}",func,func,cbData];
             
-             [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(cbData)];
-            [fun executeWithArguments:ACArgsPack(cbData)];
+             [self.specifiedReceiver?:self.receiver callbackWithFunctionKeyPath:JSONString arguments:ACArgsPack(cbDataString)];
+            [fun executeWithArguments:ACArgsPack(cbDataJson)];
             break;
         }
     }

@@ -606,7 +606,7 @@
    // NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginAccessToken != null){uexWeiXin.cbGetLoginAccessToken('%@');}",access_tokenJson];
     //[EUtility brwView:meBrwView evaluateScript:cbStr];
     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginAccessToken" arguments:ACArgsPack(access_tokenJson)];
-    [self.func executeWithArguments:ACArgsPack(access_tokenJson)];
+    [self.func executeWithArguments:ACArgsPack(self.access_tokenDict)];
     self.func = nil;
 }
 
@@ -630,7 +630,7 @@
             dispatch_async(dispatch_get_main_queue(), ^{
                 if (data) {
                     NSDictionary *dict = [NSJSONSerialization JSONObjectWithData:data options:NSJSONReadingMutableContainers error:nil];
-                    [self cbGetLoginCheckAccessToken:[dict JSONFragment]];
+                    [self cbGetLoginCheckAccessToken:dict];
                     
                 }
             });
@@ -638,10 +638,10 @@
         });
     }
 }
-- (void)cbGetLoginCheckAccessToken:cbData {
+- (void)cbGetLoginCheckAccessToken:(id)cbData {
     //NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginCheckAccessToken != null){uexWeiXin.cbGetLoginCheckAccessToken('%@');}",cbData];
     //[EUtility brwView:meBrwView evaluateScript:cbStr];
-     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginCheckAccessToken" arguments:ACArgsPack(cbData)];
+     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginCheckAccessToken" arguments:ACArgsPack([cbData JSONFragment])];
     [self.func executeWithArguments:ACArgsPack(cbData)];
     self.func = nil;
 }
@@ -680,7 +680,7 @@
     //NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginRefreshAccessToken != null){uexWeiXin.cbGetLoginRefreshAccessToken('%@');}",[self.refreshAccessTokenDict JSONFragment]];
     //[EUtility brwView:meBrwView evaluateScript:cbStr];
     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginRefreshAccessToken" arguments:ACArgsPack([self.refreshAccessTokenDict JSONFragment])];
-    [self.func executeWithArguments:ACArgsPack([self.refreshAccessTokenDict JSONFragment])];
+    [self.func executeWithArguments:ACArgsPack(self.refreshAccessTokenDict)];
     self.func = nil;
 
 }
@@ -719,7 +719,7 @@
     //NSString *cbStr=[NSString stringWithFormat:@"if(uexWeiXin.cbGetLoginUnionID != null){uexWeiXin.cbGetLoginUnionID('%@');}",[self.userInfoDict JSONFragment]];
     //[EUtility brwView:meBrwView evaluateScript:cbStr];
     [self.webViewEngine callbackWithFunctionKeyPath:@"uexWeiXin.cbGetLoginUnionID" arguments:ACArgsPack([self.userInfoDict JSONFragment])];
-    [self.func executeWithArguments:ACArgsPack([self.userInfoDict JSONFragment])];
+    [self.func executeWithArguments:ACArgsPack(self.userInfoDict)];
     self.func = nil;
 }
 //********************************微信授权登录*********************
