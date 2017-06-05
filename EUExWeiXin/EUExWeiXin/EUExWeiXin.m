@@ -1028,6 +1028,168 @@
 
 }
 
+- (void)shareVideoContent:(NSMutableArray *)inArguments{
+    
+    NSString *jsonData = nil;
+    ACJSFunctionRef *func = nil;
+    if ([inArguments count] > 0) {
+        jsonData = [inArguments objectAtIndex:0];
+        func = JSFunctionArg(inArguments.lastObject);
+    }
+    
+    NSMutableDictionary *jsonDataDict = nil;
+    
+    
+    if ([jsonData isKindOfClass:[NSString class]]) {
+        jsonDataDict = [jsonData JSONValue];
+    } else {
+        
+        ACArgsUnpack(NSDictionary *info,ACJSFunctionRef *cb) = inArguments;
+        
+        jsonDataDict = [info mutableCopy];
+        func = cb;
+        
+    }
+    
+    if(jsonDataDict == nil) {
+        
+        return;
+    }
+    
+    
+    
+    int scene ;
+    NSString *videoUrl = nil;
+    NSString *videoLowBandUrl = nil;
+    NSString *title =nil;
+    NSString *description =nil;
+    NSString *thumbImg = nil;
+    
+    scene = [[jsonDataDict objectForKey:@"scene"] intValue];
+    videoUrl = [jsonDataDict objectForKey:@"videoUrl"];
+    videoLowBandUrl = [jsonDataDict objectForKey:@"videoLowBandUrl"];
+    title = [jsonDataDict objectForKey:@"title"];
+    description = [jsonDataDict objectForKey:@"description"];
+    
+    if (videoUrl == nil && videoLowBandUrl == nil) {
+        
+        return;
+    }
+    
+    WXMediaMessage *message = [WXMediaMessage message];
+    //本地,url
+    //32
+    if (![thumbImg hasPrefix:@"http"]) {
+        thumbImg = [self absPath:thumbImg];
+        UIImage * imgTemp = [UIImage imageWithContentsOfFile:thumbImg];
+        [message setThumbImage:imgTemp];
+    }
+    else {
+        
+        NSURL *imgURL = [NSURL URLWithString:thumbImg];
+        NSData *imageData = [NSData dataWithContentsOfURL:imgURL];
+        [message setThumbData:imageData];
+    }
+    [message setTitle:title];
+    [message setDescription:description];
+    
+    WXVideoObject *ext = [WXVideoObject object];
+    ext.videoUrl = videoUrl;
+    ext.videoLowBandUrl = videoLowBandUrl;
+    
+    message.mediaObject = ext;
+    
+    
+    SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = scene;
+    [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeVideo;
+    [self startWXRequest:req FunctionRef:func];
+    
+}
+
+- (void)shareMusicContent:(NSMutableArray *)inArguments{
+    
+    NSString *jsonData = nil;
+    ACJSFunctionRef *func = nil;
+    if ([inArguments count] > 0) {
+        jsonData = [inArguments objectAtIndex:0];
+        func = JSFunctionArg(inArguments.lastObject);
+    }
+    
+    NSMutableDictionary *jsonDataDict = nil;
+    
+    
+    if ([jsonData isKindOfClass:[NSString class]]) {
+        jsonDataDict = [jsonData JSONValue];
+    } else {
+        
+        ACArgsUnpack(NSDictionary *info,ACJSFunctionRef *cb) = inArguments;
+        
+        jsonDataDict = [info mutableCopy];
+        func = cb;
+        
+    }
+    
+    if(jsonDataDict == nil) {
+        
+        return;
+    }
+    
+    
+    
+    int scene ;
+    NSString *musicUrl = nil;
+    NSString *musicLowBandUrl = nil;
+    NSString *title =nil;
+    NSString *description =nil;
+    NSString *thumbImg = nil;
+    
+    scene = [[jsonDataDict objectForKey:@"scene"] intValue];
+    musicUrl = [jsonDataDict objectForKey:@"musicUrl"];
+    musicLowBandUrl = [jsonDataDict objectForKey:@"musicLowBandUrl"];
+    title = [jsonDataDict objectForKey:@"title"];
+    description = [jsonDataDict objectForKey:@"description"];
+    
+    if (musicUrl == nil && musicLowBandUrl == nil) {
+        
+        return;
+    }
+    
+    WXMediaMessage *message = [WXMediaMessage message];
+    //本地,url
+    //32
+    if (![thumbImg hasPrefix:@"http"]) {
+        thumbImg = [self absPath:thumbImg];
+        UIImage * imgTemp = [UIImage imageWithContentsOfFile:thumbImg];
+        [message setThumbImage:imgTemp];
+    }
+    else {
+        
+        NSURL *imgURL = [NSURL URLWithString:thumbImg];
+        NSData *imageData = [NSData dataWithContentsOfURL:imgURL];
+        [message setThumbData:imageData];
+    }
+    [message setTitle:title];
+    [message setDescription:description];
+    
+    WXMusicObject *ext = [WXMusicObject object];
+    ext.musicUrl = musicUrl;
+    ext.musicLowBandUrl = musicLowBandUrl;
+    
+    message.mediaObject = ext;
+    
+    
+    SendMessageToWXReq *req = [[SendMessageToWXReq alloc] init];
+    req.bText = NO;
+    req.message = message;
+    req.scene = scene;
+    [uexWeiXinResponder sharedResponder].currentShareType=uexWeiXinShareTypeMusic;
+    [self startWXRequest:req FunctionRef:func];
+    
+}
+
 - (void)shareImageContent:(NSMutableArray *)inArguments {
     NSString *jsonData = nil;
     ACJSFunctionRef *func = nil;

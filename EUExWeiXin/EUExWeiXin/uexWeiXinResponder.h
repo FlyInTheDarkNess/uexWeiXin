@@ -32,6 +32,8 @@ typedef NS_ENUM(NSInteger,uexWeiXinShareType) {
     uexWeiXinShareTypePhoto,
     uexWeiXinShareTypeLink,
     uexWeiXinShareTypeText,
+    uexWeiXinShareTypeVideo,
+    uexWeiXinShareTypeMusic
 };
 
 

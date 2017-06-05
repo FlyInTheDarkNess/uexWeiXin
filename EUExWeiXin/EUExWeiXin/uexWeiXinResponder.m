@@ -123,6 +123,14 @@
             [self callbackWithFunction:@"cbShareTextContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
             break;
         }
+        case uexWeiXinShareTypeVideo: {
+            [self callbackWithFunction:@"cbShareVideoContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
+            break;
+        }
+        case uexWeiXinShareTypeMusic: {
+            [self callbackWithFunction:@"cbShareMusicContent" object:code cbType:UEX_CALLBACK_NEW_FORMAT FunctionRef:self.func];
+            break;
+        }
     }
 }
 
