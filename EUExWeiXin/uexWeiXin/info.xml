@@ -1,7 +1,8 @@
 <?xml version="1.0" encoding="utf-8" ?>
 <uexplugins>
-    <plugin uexName="uexWeiXin" version="4.0.2" build="2">
-        <info>2:修改全部function回调数据类型为对象</info>
+    <plugin uexName="uexWeiXin" version="4.0.3" build="3">
+        <info>3:新增分享视频和分享音乐接口</info>
+        <build>2:修改全部function回调数据类型为对象</build>
         <build>1:SDK升级至1.7.5</build>
         <build>0:微信插件 for iOS</build>
 	</plugin>
