@@ -1027,6 +1027,10 @@
     return [WXApi handleOpenURL:url delegate:[uexWeiXinResponder sharedResponder]];
 }
 
++ (BOOL)application:(UIApplication *)app openURL:(NSURL *)url options:(NSDictionary<NSString*, id> *)options{
+    return [WXApi handleOpenURL:url delegate:[uexWeiXinResponder sharedResponder]];
+}
+
 
 
 
